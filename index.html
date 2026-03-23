@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Football League Management</title>
     <style>
         * {
@@ -37,48 +37,67 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             transition: background-color 0.3s, color 0.3s;
+            line-height: 1.6;
+        }
+
+        html {
+            overflow-x: hidden;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 1rem;
+            width: 100%;
         }
 
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding: 20px;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: white;
             border-radius: 12px;
             box-shadow: var(--shadow-lg);
+            gap: 1rem;
+            flex-wrap: wrap;
+            min-height: auto;
         }
 
         h1 {
-            font-size: 2em;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
             margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            word-break: break-word;
         }
 
         .header-controls {
             display: flex;
-            gap: 15px;
+            gap: 0.75rem;
             align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            width: auto;
         }
 
         .btn {
-            padding: 10px 20px;
+            padding: 0.6rem 1rem;
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: clamp(0.75rem, 2.5vw, 0.875rem);
             font-weight: 600;
             transition: all 0.3s;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 0.5rem;
+            white-space: nowrap;
+            touch-action: manipulation;
+            min-height: 44px;
+            min-width: 44px;
+            justify-content: center;
         }
 
         .btn-primary {
@@ -86,7 +105,8 @@
             color: white;
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover,
+        .btn-primary:active {
             background-color: var(--secondary-color);
             transform: translateY(-2px);
             box-shadow: var(--shadow-lg);
@@ -97,7 +117,8 @@
             color: #1f2937;
         }
 
-        .btn-secondary:hover {
+        .btn-secondary:hover,
+        .btn-secondary:active {
             background-color: #d97706;
             transform: translateY(-2px);
         }
@@ -107,7 +128,8 @@
             color: white;
         }
 
-        .btn-success:hover {
+        .btn-success:hover,
+        .btn-success:active {
             background-color: #059669;
         }
 
@@ -116,48 +138,72 @@
             color: white;
         }
 
-        .btn-danger:hover {
+        .btn-danger:hover,
+        .btn-danger:active {
             background-color: #dc2626;
         }
 
         .btn-small {
-            padding: 6px 12px;
-            font-size: 12px;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
         }
 
         .theme-toggle {
             background: rgba(255, 255, 255, 0.2);
             color: white;
             border: 2px solid white;
-            padding: 8px 15px;
+            padding: 0.5rem 1rem;
             border-radius: 20px;
         }
 
-        .theme-toggle:hover {
+        .theme-toggle:hover,
+        .theme-toggle:active {
             background: rgba(255, 255, 255, 0.3);
         }
 
         .nav-tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
             border-bottom: 2px solid var(--border-color);
-            flex-wrap: wrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+        }
+
+        .nav-tabs::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .nav-tabs::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .nav-tabs::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 2px;
         }
 
         .nav-tab {
-            padding: 12px 20px;
+            padding: 0.75rem 1rem;
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 16px;
+            font-size: clamp(0.75rem, 2.5vw, 1rem);
             color: var(--text-color);
             border-bottom: 3px solid transparent;
             transition: all 0.3s;
             font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            touch-action: manipulation;
         }
 
-        .nav-tab:hover {
+        .nav-tab:hover,
+        .nav-tab:active {
             color: var(--primary-color);
         }
 
@@ -168,25 +214,32 @@
 
         .tab-content {
             display: none;
+            animation: fadeIn 0.3s ease-in;
         }
 
         .tab-content.active {
             display: block;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
             box-shadow: var(--shadow);
+            overflow: hidden;
         }
 
         .card-title {
-            font-size: 1.5em;
+            font-size: clamp(1.125rem, 3vw, 1.875rem);
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 1rem;
             color: var(--primary-color);
         }
 
@@ -194,18 +247,19 @@
             width: 100%;
             border-collapse: collapse;
             background: var(--bg-color);
+            font-size: clamp(0.75rem, 2vw, 0.95rem);
         }
 
         th {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: white;
-            padding: 15px;
+            padding: 0.75rem;
             text-align: left;
             font-weight: 700;
         }
 
         td {
-            padding: 12px 15px;
+            padding: 0.75rem;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -214,7 +268,7 @@
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 1.25rem;
             display: flex;
             flex-direction: column;
         }
@@ -222,23 +276,26 @@
         .form-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            gap: 1rem;
         }
 
         label {
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 0.5rem;
             color: var(--text-color);
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
         }
 
         input, select, textarea {
-            padding: 12px;
+            padding: 0.75rem;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             background: var(--bg-color);
             color: var(--text-color);
-            font-size: 14px;
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
             transition: border-color 0.3s;
+            width: 100%;
+            font-family: inherit;
         }
 
         input:focus, select:focus, textarea:focus {
@@ -247,85 +304,106 @@
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
+        input[type="number"],
+        input[type="text"],
+        input[type="password"] {
+            font-size: 16px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
         .password-prompt {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            padding: 1rem;
         }
 
         .password-modal {
             background: var(--bg-color);
-            padding: 30px;
+            padding: 1.5rem;
             border-radius: 12px;
             box-shadow: var(--shadow-lg);
             max-width: 400px;
-            width: 90%;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .password-modal h2 {
-            margin-bottom: 20px;
+            margin-bottom: 1rem;
             color: var(--primary-color);
+            font-size: clamp(1.25rem, 3vw, 1.75rem);
         }
 
         .password-modal input {
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 1rem;
         }
 
         .password-modal-buttons {
             display: flex;
-            gap: 10px;
+            gap: 0.75rem;
             justify-content: flex-end;
+            flex-wrap: wrap;
         }
 
         .recent-match {
             background: var(--card-bg);
-            padding: 15px;
-            margin-bottom: 15px;
+            padding: 1rem;
+            margin-bottom: 1rem;
             border-left: 4px solid var(--primary-color);
             border-radius: 6px;
+            word-break: break-word;
         }
 
         .match-score {
-            font-size: 1.8em;
+            font-size: clamp(1.25rem, 4vw, 1.875rem);
             font-weight: 700;
             color: var(--primary-color);
-            margin: 10px 0;
+            margin: 0.75rem 0;
         }
 
         .fixtures-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
         }
 
         .fixture-card {
             background: var(--card-bg);
-            padding: 15px;
+            padding: 1rem;
             border-radius: 8px;
             border: 1px solid var(--border-color);
+            overflow-y: auto;
+            max-height: 400px;
         }
 
         .fixture-day {
             font-weight: 700;
             color: var(--primary-color);
-            margin-bottom: 15px;
+            margin-bottom: 1rem;
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
         }
 
         .fixture-match {
-            padding: 10px;
-            margin-bottom: 10px;
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
             background: var(--bg-color);
             border-radius: 6px;
-            font-size: 14px;
+            font-size: clamp(0.75rem, 2vw, 0.875rem);
             border: 1px solid var(--border-color);
+            word-break: break-word;
         }
 
         .fixture-match.played {
@@ -335,22 +413,42 @@
 
         .responsive-table {
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        .responsive-table::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .responsive-table::-webkit-scrollbar-track {
+            background: var(--card-bg);
+        }
+
+        .responsive-table::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
         }
 
         .error-message {
             background: var(--danger-color);
             color: white;
-            padding: 12px;
+            padding: 1rem;
             border-radius: 6px;
-            margin-bottom: 15px;
+            margin-bottom: 1rem;
+            font-size: clamp(0.75rem, 2.5vw, 0.95rem);
+            word-break: break-word;
         }
 
         .success-message {
             background: var(--success-color);
             color: white;
-            padding: 12px;
+            padding: 1rem;
             border-radius: 6px;
-            margin-bottom: 15px;
+            margin-bottom: 1rem;
+            font-size: clamp(0.75rem, 2.5vw, 0.95rem);
+            word-break: break-word;
         }
 
         .modal-overlay {
@@ -364,6 +462,7 @@
             z-index: 999;
             justify-content: center;
             align-items: center;
+            padding: 1rem;
         }
 
         .modal-overlay.active {
@@ -372,12 +471,12 @@
 
         .modal {
             background: var(--bg-color);
-            padding: 30px;
+            padding: 1.5rem;
             border-radius: 12px;
             box-shadow: var(--shadow-lg);
             max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
+            width: 100%;
+            max-height: 90vh;
             overflow-y: auto;
         }
 
@@ -385,7 +484,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 1rem;
         }
 
         .modal-close {
@@ -394,70 +493,411 @@
             font-size: 24px;
             cursor: pointer;
             color: var(--text-color);
+            min-height: 44px;
+            min-width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .stat-box {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: white;
-            padding: 20px;
+            padding: 1.25rem;
             border-radius: 12px;
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 1rem;
         }
 
         .stat-box-value {
-            font-size: 2em;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
             font-weight: 700;
         }
 
         .stat-box-label {
-            font-size: 12px;
+            font-size: clamp(0.7rem, 2vw, 0.9rem);
             opacity: 0.9;
-            margin-top: 5px;
+            margin-top: 0.5rem;
         }
 
-        @media (max-width: 768px) {
+        #adminLogin {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        #adminLogin p {
+            margin-bottom: 1rem;
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
+        }
+
+        .admin-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Mobile First - 0-480px */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.75rem;
+            }
+
             header {
+                padding: 0.75rem;
+                margin-bottom: 1rem;
                 flex-direction: column;
-                gap: 15px;
+                align-items: stretch;
             }
 
             h1 {
-                font-size: 1.5em;
+                font-size: 1.25rem;
+                text-align: center;
+                width: 100%;
             }
 
             .header-controls {
                 width: 100%;
-                flex-wrap: wrap;
+                gap: 0.5rem;
+                justify-content: center;
+            }
+
+            .btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.75rem;
+                flex: 1;
+                min-width: 0;
+            }
+
+            .btn span {
+                display: none;
             }
 
             .nav-tabs {
-                overflow-x: auto;
+                margin-bottom: 1rem;
+                gap: 0.25rem;
             }
 
             .nav-tab {
-                font-size: 14px;
-                padding: 10px 15px;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.75rem;
+            }
+
+            .card {
+                padding: 1rem;
+                margin-bottom: 1rem;
+                border-radius: 8px;
+            }
+
+            .card-title {
+                font-size: 1.125rem;
+                margin-bottom: 0.75rem;
             }
 
             table {
-                font-size: 12px;
+                font-size: 0.7rem;
             }
 
             th, td {
-                padding: 8px;
+                padding: 0.5rem;
             }
 
             .form-row {
                 grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .form-group {
+                margin-bottom: 1rem;
+            }
+
+            label {
+                font-size: 0.85rem;
+                margin-bottom: 0.4rem;
+            }
+
+            input, select, textarea {
+                font-size: 16px;
+                padding: 0.6rem;
+            }
+
+            .recent-match {
+                padding: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .match-score {
+                font-size: 1.25rem;
             }
 
             .fixtures-grid {
                 grid-template-columns: 1fr;
+                gap: 0.75rem;
             }
 
+            .fixture-card {
+                padding: 0.75rem;
+                max-height: 300px;
+            }
+
+            .fixture-match {
+                padding: 0.6rem;
+                margin-bottom: 0.5rem;
+                font-size: 0.75rem;
+            }
+
+            .password-modal {
+                padding: 1rem;
+            }
+
+            .password-modal h2 {
+                font-size: 1.25rem;
+            }
+
+            .admin-buttons {
+                flex-direction: column;
+            }
+
+            .admin-buttons .btn {
+                width: 100%;
+            }
+        }
+
+        /* Small Tablets - 481-768px */
+        @media (min-width: 481px) and (max-width: 768px) {
             .container {
-                padding: 10px;
+                padding: 1rem;
+            }
+
+            header {
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+                flex-wrap: wrap;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                flex: 1;
+                min-width: 250px;
+            }
+
+            .header-controls {
+                gap: 0.75rem;
+                justify-content: flex-end;
+            }
+
+            .btn {
+                padding: 0.6rem 0.9rem;
+                font-size: 0.85rem;
+            }
+
+            .nav-tabs {
+                margin-bottom: 1.25rem;
+                gap: 0.75rem;
+            }
+
+            .nav-tab {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .card {
+                padding: 1.25rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .card-title {
+                font-size: 1.35rem;
+                margin-bottom: 1rem;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 0.65rem;
+            }
+
+            .form-row {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            label {
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+            }
+
+            input, select, textarea {
+                font-size: 16px;
+                padding: 0.7rem;
+            }
+
+            .recent-match {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .match-score {
+                font-size: 1.5rem;
+            }
+
+            .fixtures-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .fixture-card {
+                padding: 1rem;
+                max-height: 350px;
+            }
+
+            .fixture-match {
+                padding: 0.75rem;
+                margin-bottom: 0.75rem;
+                font-size: 0.85rem;
+            }
+
+            .password-modal {
+                padding: 1.25rem;
+            }
+
+            .password-modal h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Large Tablets - 769-1024px */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                padding: 1.25rem;
+            }
+
+            header {
+                padding: 1.25rem;
+                margin-bottom: 2rem;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            .header-controls {
+                gap: 1rem;
+            }
+
+            .btn {
+                padding: 0.7rem 1.1rem;
+                font-size: 0.9rem;
+            }
+
+            .nav-tabs {
+                margin-bottom: 1.5rem;
+                gap: 1rem;
+            }
+
+            .nav-tab {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.95rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .card-title {
+                font-size: 1.5rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .form-row {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.25rem;
+            }
+
+            .fixtures-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.25rem;
+            }
+
+            .fixture-card {
+                padding: 1.25rem;
+                max-height: 400px;
+            }
+
+            .fixture-match {
+                padding: 0.85rem;
+                margin-bottom: 0.85rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Desktop - 1025px+ */
+        @media (min-width: 1025px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            header {
+                padding: 1.5rem;
+                margin-bottom: 2rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .header-controls {
+                gap: 1rem;
+            }
+
+            .btn {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.95rem;
+            }
+
+            .nav-tabs {
+                margin-bottom: 2rem;
+                gap: 1rem;
+            }
+
+            .nav-tab {
+                padding: 0.875rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .card {
+                padding: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .card-title {
+                font-size: 1.75rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .fixtures-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .fixture-card {
+                padding: 1.5rem;
+                max-height: 500px;
+            }
+
+            .fixture-match {
+                padding: 1rem;
+                margin-bottom: 1rem;
+                font-size: 0.95rem;
             }
         }
 
@@ -475,6 +915,10 @@
                 page-break-inside: avoid;
                 box-shadow: none;
                 border: 1px solid #ddd;
+            }
+
+            table {
+                page-break-inside: avoid;
             }
         }
     </style>
@@ -620,7 +1064,7 @@
                         <button type="submit" class="btn btn-success">Submit Result</button>
                     </form>
                     <div id="adminMessage"></div>
-                    <div style="margin-top: 20px;">
+                    <div class="admin-buttons">
                         <button class="btn btn-danger" onclick="clearAllData()">⚠️ Clear All Data</button>
                         <button class="btn btn-secondary" onclick="logout()">Logout</button>
                     </div>
@@ -939,10 +1383,10 @@
                     <div class="recent-match">
                         <div><strong>${match.homeTeam} vs ${match.awayTeam}</strong></div>
                         <div class="match-score">${match.homeGoals} - ${match.awayGoals}</div>
-                        <div style="font-size: 12px; color: var(--text-color); opacity: 0.7;">
+                        <div style="font-size: clamp(0.7rem, 2vw, 0.85rem); color: var(--text-color); opacity: 0.7;">
                             Leg ${match.leg} | Day ${match.day} | ${match.date}
                         </div>
-                        ${match.scorers ? `<div style="font-size: 12px; margin-top: 8px;"><strong>Scorers:</strong> ${match.scorers}</div>` : ''}
+                        ${match.scorers ? `<div style="font-size: clamp(0.7rem, 2vw, 0.85rem); margin-top: 0.5rem;"><strong>Scorers:</strong> ${match.scorers}</div>` : ''}
                     </div>
                 `;
                 recentResults.innerHTML += result;
@@ -960,7 +1404,7 @@
             });
 
             // Render Leg 1
-            let html = '<h3 style="color: var(--primary-color); margin: 20px 0 15px;">Leg 1</h3>';
+            let html = '<h3 style="color: var(--primary-color); margin: clamp(1rem, 3vw, 2rem) 0 1rem; font-size: clamp(1.125rem, 3vw, 1.5rem);">Leg 1</h3>';
             html += '<div class="fixtures-grid">';
 
             Object.keys(LEG1_FIXTURES).forEach(day => {
@@ -981,7 +1425,7 @@
             html += '</div>';
 
             // Render Leg 2
-            html += '<h3 style="color: var(--primary-color); margin: 30px 0 15px;">Leg 2</h3>';
+            html += '<h3 style="color: var(--primary-color); margin: clamp(1.5rem, 4vw, 3rem) 0 1rem; font-size: clamp(1.125rem, 3vw, 1.5rem);">Leg 2</h3>';
             html += '<div class="fixtures-grid">';
 
             Object.keys(LEG2_FIXTURES).forEach(day => {
@@ -1008,7 +1452,7 @@
             historyBody.innerHTML = '';
 
             if (matches.length === 0) {
-                historyBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">No match history yet.</td></tr>';
+                historyBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: clamp(1rem, 3vw, 2rem);">No match history yet.</td></tr>';
                 return;
             }
 
