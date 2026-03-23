@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football League Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #f59e0b;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --bg-color: #ffffff;
+            --text-color: #1f2937;
+            --border-color: #e5e7eb;
+            --card-bg: #f9fafb;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode {
+            --bg-color: #1f2937;
+            --text-color: #f3f4f6;
+            --border-color: #374151;
+            --card-bg: #111827;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        h1 {
+            font-size: 2em;
+            margin: 0;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background-color: var(--accent-color);
+            color: #1f2937;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d97706;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #059669;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: var(--text-color);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .nav-tab:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-color);
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tr:hover {
+            background: var(--card-bg);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        input, select, textarea {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .password-prompt {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .password-modal {
+            background: var(--bg-color);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .password-modal h2 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .password-modal input {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .password-modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .recent-match {
+            background: var(--card-bg);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 6px;
+        }
+
+        .match-score {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+
+        .fixtures-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .fixture-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .fixture-day {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .fixture-match {
+            padding: 10px;
+            margin-bottom: 10px;
+            background: var(--bg-color);
+            border-radius: 6px;
+            font-size: 14px;
+            border: 1px solid var(--border-color);
+        }
+
+        .fixture-match.played {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+
+        .responsive-table {
+            overflow-x: auto;
+        }
+
+        .error-message {
+            background: var(--danger-color);
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .success-message {
+            background: var(--success-color);
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-color);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .stat-box-value {
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        .stat-box-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .header-controls {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .nav-tabs {
+                overflow-x: auto;
+            }
+
+            .nav-tab {
+                font-size: 14px;
+                padding: 10px 15px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .fixtures-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 10px;
+            }
+        }
+
+        @media print {
+            .header-controls, .nav-tabs, .btn-secondary, .password-prompt {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+                color: black;
+            }
+
+            .card {
+                page-break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚽ Football League Management</h1>
+            <div class="header-controls">
+                <button class="btn btn-secondary" onclick="exportData()">📊 Export</button>
+                <button class="btn btn-secondary" onclick="window.print()">🖨️ Print</button>
+                <button class="btn theme-toggle" onclick="toggleTheme()">🌙 Dark Mode</button>
+            </div>
+        </header>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('league')">League Table</button>
+            <button class="nav-tab" onclick="switchTab('results')">Recent Results</button>
+            <button class="nav-tab" onclick="switchTab('fixtures')">Fixtures</button>
+            <button class="nav-tab" onclick="switchTab('history')">Match History</button>
+            <button class="nav-tab" onclick="switchTab('admin')">Admin</button>
+        </div>
+
+        <!-- League Table Tab -->
+        <div id="league" class="tab-content active">
+            <div class="card">
+                <h2 class="card-title">League Table</h2>
+                <div class="responsive-table">
+                    <table id="leagueTable">
+                        <thead>
+                            <tr>
+                                <th>Position</th>
+                                <th>Team</th>
+                                <th>P</th>
+                                <th>W</th>
+                                <th>D</th>
+                                <th>L</th>
+                                <th>GF</th>
+                                <th>GA</th>
+                                <th>GD</th>
+                                <th>Pts</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leagueBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Results Tab -->
+        <div id="results" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Recent Results</h2>
+                <div id="recentResults"></div>
+            </div>
+        </div>
+
+        <!-- Fixtures Tab -->
+        <div id="fixtures" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Fixtures</h2>
+                <div id="fixturesContent"></div>
+            </div>
+        </div>
+
+        <!-- Match History Tab -->
+        <div id="history" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Match History</h2>
+                <div class="responsive-table">
+                    <table id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Leg</th>
+                                <th>Home Team</th>
+                                <th>Score</th>
+                                <th>Away Team</th>
+                                <th>Scorers</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Tab -->
+        <div id="admin" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Admin - Enter Match Result</h2>
+                <div id="adminContent" style="display: none;">
+                    <form id="resultForm" onsubmit="submitResult(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="homeTeam">Home Team</label>
+                                <select id="homeTeam" required>
+                                    <option value="">Select...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="awayTeam">Away Team</label>
+                                <select id="awayTeam" required>
+                                    <option value="">Select...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="homeGoals">Home Goals</label>
+                                <input type="number" id="homeGoals" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="awayGoals">Away Goals</label>
+                                <input type="number" id="awayGoals" min="0" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="leg">Leg</label>
+                                <select id="leg" required>
+                                    <option value="">Select...</option>
+                                    <option value="1">Leg 1</option>
+                                    <option value="2">Leg 2</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="dayNumber">Day Number (Optional)</label>
+                                <input type="number" id="dayNumber" min="1" max="5">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="scorers">Goal Scorers (Optional)</label>
+                            <textarea id="scorers" placeholder="Enter goal scorers details..." rows="3"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Submit Result</button>
+                    </form>
+                    <div id="adminMessage"></div>
+                    <div style="margin-top: 20px;">
+                        <button class="btn btn-danger" onclick="clearAllData()">⚠️ Clear All Data</button>
+                        <button class="btn btn-secondary" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+                <div id="adminLogin">
+                    <p>Please log in to access the admin section.</p>
+                    <button class="btn btn-primary" onclick="showPasswordPrompt()">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div id="passwordModal" class="password-prompt" style="display: none;">
+        <div class="password-modal">
+            <h2>Admin Login</h2>
+            <input type="password" id="passwordInput" placeholder="Enter password" onkeypress="if(event.key==='Enter') checkPassword()">
+            <div class="password-modal-buttons">
+                <button class="btn" onclick="closePasswordPrompt()" style="background: var(--border-color); color: var(--text-color);">Cancel</button>
+                <button class="btn btn-primary" onclick="checkPassword()">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Constants
+        const ADMIN_PASSWORD = 'seth47890';
+        const TEAMS = [
+            'Irumba FC',
+            'Akasayi FC',
+            'Dishan FC',
+            'Calvin FC',
+            'rHOSH FC',
+            'Phoenix FC',
+            'Mom Is The Reason FC',
+            'Emaa T FC',
+            'Venom FC',
+            'ASH FC'
+        ];
+
+        const LEG1_FIXTURES = {
+            'Day 1': [
+                { home: 'Irumba FC', away: 'Akasayi FC' },
+                { home: 'Akasayi FC', away: 'Dishan FC' },
+                { home: 'Dishan FC', away: 'Calvin FC' },
+                { home: 'Calvin FC', away: 'rHOSH FC' },
+                { home: 'rHOSH FC', away: 'Phoenix FC' },
+                { home: 'Phoenix FC', away: 'Mom Is The Reason FC' },
+                { home: 'Mom Is The Reason FC', away: 'Emaa T FC' },
+                { home: 'Emaa T FC', away: 'Venom FC' },
+                { home: 'Venom FC', away: 'ASH FC' },
+                { home: 'ASH FC', away: 'Irumba FC' }
+            ],
+            'Day 2': [
+                { home: 'Irumba FC', away: 'Dishan FC' },
+                { home: 'Dishan FC', away: 'rHOSH FC' },
+                { home: 'rHOSH FC', away: 'Mom Is The Reason FC' },
+                { home: 'Mom Is The Reason FC', away: 'Venom FC' },
+                { home: 'Venom FC', away: 'Akasayi FC' },
+                { home: 'Akasayi FC', away: 'Calvin FC' },
+                { home: 'Calvin FC', away: 'Phoenix FC' },
+                { home: 'Phoenix FC', away: 'Emaa T FC' },
+                { home: 'Emaa T FC', away: 'ASH FC' },
+                { home: 'ASH FC', away: 'Irumba FC' }
+            ],
+            'Day 3': [
+                { home: 'Irumba FC', away: 'Calvin FC' },
+                { home: 'Calvin FC', away: 'Mom Is The Reason FC' },
+                { home: 'Mom Is The Reason FC', away: 'Emaa T FC' },
+                { home: 'Emaa T FC', away: 'Akasayi FC' },
+                { home: 'Akasayi FC', away: 'Phoenix FC' },
+                { home: 'Phoenix FC', away: 'Venom FC' },
+                { home: 'Venom FC', away: 'rHOSH FC' },
+                { home: 'rHOSH FC', away: 'ASH FC' },
+                { home: 'ASH FC', away: 'Dishan FC' },
+                { home: 'Dishan FC', away: 'Irumba FC' }
+            ],
+            'Day 4': [
+                { home: 'Irumba FC', away: 'rHOSH FC' },
+                { home: 'rHOSH FC', away: 'Emaa T FC' },
+                { home: 'Emaa T FC', away: 'Venom FC' },
+                { home: 'Venom FC', away: 'Dishan FC' },
+                { home: 'Dishan FC', away: 'Phoenix FC' },
+                { home: 'Phoenix FC', away: 'ASH FC' },
+                { home: 'ASH FC', away: 'Calvin FC' },
+                { home: 'Calvin FC', away: 'Akasayi FC' },
+                { home: 'Akasayi FC', away: 'Mom Is The Reason FC' },
+                { home: 'Mom Is The Reason FC', away: 'Irumba FC' }
+            ],
+            'Day 5': [
+                { home: 'Irumba FC', away: 'Phoenix FC' },
+                { home: 'Akasayi FC', away: 'Emaa T FC' },
+                { home: 'Dishan FC', away: 'rHOSH FC' },
+                { home: 'Calvin FC', away: 'Mom Is The Reason FC' },
+                { home: 'Venom FC', away: 'ASH FC' }
+            ]
+        };
+
+        const LEG2_FIXTURES = {
+            'Day 1': [
+                { home: 'Akasayi FC', away: 'Irumba FC' },
+                { home: 'Dishan FC', away: 'Akasayi FC' },
+                { home: 'Calvin FC', away: 'Dishan FC' },
+                { home: 'rHOSH FC', away: 'Calvin FC' },
+                { home: 'Phoenix FC', away: 'rHOSH FC' },
+                { home: 'Mom Is The Reason FC', away: 'Phoenix FC' },
+                { home: 'Emaa T FC', away: 'Mom Is The Reason FC' },
+                { home: 'Venom FC', away: 'Emaa T FC' },
+                { home: 'ASH FC', away: 'Venom FC' },
+                { home: 'Irumba FC', away: 'ASH FC' }
+            ],
+            'Day 2': [
+                { home: 'Dishan FC', away: 'Irumba FC' },
+                { home: 'rHOSH FC', away: 'Dishan FC' },
+                { home: 'Mom Is The Reason FC', away: 'rHOSH FC' },
+                { home: 'Venom FC', away: 'Mom Is The Reason FC' },
+                { home: 'Akasayi FC', away: 'Venom FC' },
+                { home: 'Calvin FC', away: 'Akasayi FC' },
+                { home: 'Phoenix FC', away: 'Calvin FC' },
+                { home: 'Emaa T FC', away: 'Phoenix FC' },
+                { home: 'ASH FC', away: 'Emaa T FC' },
+                { home: 'Irumba FC', away: 'ASH FC' }
+            ],
+            'Day 3': [
+                { home: 'Calvin FC', away: 'Irumba FC' },
+                { home: 'Mom Is The Reason FC', away: 'Calvin FC' },
+                { home: 'Emaa T FC', away: 'Mom Is The Reason FC' },
+                { home: 'Akasayi FC', away: 'Emaa T FC' },
+                { home: 'Phoenix FC', away: 'Akasayi FC' },
+                { home: 'Venom FC', away: 'Phoenix FC' },
+                { home: 'rHOSH FC', away: 'Venom FC' },
+                { home: 'ASH FC', away: 'rHOSH FC' },
+                { home: 'Dishan FC', away: 'ASH FC' },
+                { home: 'Irumba FC', away: 'Dishan FC' }
+            ],
+            'Day 4': [
+                { home: 'rHOSH FC', away: 'Irumba FC' },
+                { home: 'Emaa T FC', away: 'rHOSH FC' },
+                { home: 'Venom FC', away: 'Emaa T FC' },
+                { home: 'Dishan FC', away: 'Venom FC' },
+                { home: 'Phoenix FC', away: 'Dishan FC' },
+                { home: 'ASH FC', away: 'Phoenix FC' },
+                { home: 'Calvin FC', away: 'ASH FC' },
+                { home: 'Akasayi FC', away: 'Calvin FC' },
+                { home: 'Mom Is The Reason FC', away: 'Akasayi FC' },
+                { home: 'Irumba FC', away: 'Mom Is The Reason FC' }
+            ],
+            'Day 5': [
+                { home: 'Phoenix FC', away: 'Irumba FC' },
+                { home: 'Emaa T FC', away: 'Akasayi FC' },
+                { home: 'rHOSH FC', away: 'Dishan FC' },
+                { home: 'Mom Is The Reason FC', away: 'Calvin FC' },
+                { home: 'ASH FC', away: 'Venom FC' }
+            ]
+        };
+
+        // State
+        let isAdminLoggedIn = false;
+        let standings = {};
+        let matches = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeStandings();
+            loadFromLocalStorage();
+            populateTeamSelects();
+            updateLeagueTable();
+            updateRecentResults();
+            updateFixtures();
+            updateMatchHistory();
+            checkTheme();
+        });
+
+        function initializeStandings() {
+            TEAMS.forEach(team => {
+                standings[team] = {
+                    played: 0,
+                    wins: 0,
+                    draws: 0,
+                    losses: 0,
+                    goalsFor: 0,
+                    goalsAgainst: 0
+                };
+            });
+        }
+
+        function populateTeamSelects() {
+            const homeTeam = document.getElementById('homeTeam');
+            const awayTeam = document.getElementById('awayTeam');
+            
+            TEAMS.forEach(team => {
+                homeTeam.innerHTML += `<option value="${team}">${team}</option>`;
+                awayTeam.innerHTML += `<option value="${team}">${team}</option>`;
+            });
+        }
+
+        function submitResult(event) {
+            event.preventDefault();
+
+            if (!isAdminLoggedIn) {
+                showAdminMessage('Please login first', 'error');
+                return;
+            }
+
+            const homeTeam = document.getElementById('homeTeam').value;
+            const awayTeam = document.getElementById('awayTeam').value;
+            const homeGoals = parseInt(document.getElementById('homeGoals').value);
+            const awayGoals = parseInt(document.getElementById('awayGoals').value);
+            const leg = document.getElementById('leg').value;
+            const dayNumber = document.getElementById('dayNumber').value || 'N/A';
+            const scorers = document.getElementById('scorers').value;
+
+            if (!homeTeam || !awayTeam || homeTeam === awayTeam) {
+                showAdminMessage('Invalid teams selected', 'error');
+                return;
+            }
+
+            // Update standings
+            standings[homeTeam].played += 1;
+            standings[awayTeam].played += 1;
+            standings[homeTeam].goalsFor += homeGoals;
+            standings[homeTeam].goalsAgainst += awayGoals;
+            standings[awayTeam].goalsFor += awayGoals;
+            standings[awayTeam].goalsAgainst += homeGoals;
+
+            if (homeGoals > awayGoals) {
+                standings[homeTeam].wins += 1;
+                standings[homeTeam].played += 1;
+                standings[awayTeam].losses += 1;
+            } else if (awayGoals > homeGoals) {
+                standings[awayTeam].wins += 1;
+                standings[homeTeam].losses += 1;
+            } else {
+                standings[homeTeam].draws += 1;
+                standings[awayTeam].draws += 1;
+            }
+
+            // Add to matches
+            matches.push({
+                homeTeam,
+                awayTeam,
+                homeGoals,
+                awayGoals,
+                leg,
+                day: dayNumber,
+                scorers,
+                date: new Date().toLocaleString()
+            });
+
+            saveToLocalStorage();
+            updateLeagueTable();
+            updateRecentResults();
+            updateMatchHistory();
+            updateFixtures();
+
+            // Reset form
+            document.getElementById('resultForm').reset();
+            showAdminMessage('Result submitted successfully!', 'success');
+        }
+
+        function updateLeagueTable() {
+            const leagueBody = document.getElementById('leagueBody');
+            leagueBody.innerHTML = '';
+
+            // Create standings array
+            const standingsArray = TEAMS.map(team => ({
+                team,
+                ...standings[team]
+            }));
+
+            // Calculate points and sort
+            standingsArray.forEach(entry => {
+                entry.points = (entry.wins * 3) + (entry.draws * 1);
+                entry.goalDifference = entry.goalsFor - entry.goalsAgainst;
+            });
+
+            // Sort by: Points desc, Goal Difference desc, Goals For desc
+            standingsArray.sort((a, b) => {
+                if (b.points !== a.points) return b.points - a.points;
+                if (b.goalDifference !== a.goalDifference) return b.goalDifference - a.goalDifference;
+                return b.goalsFor - a.goalsFor;
+            });
+
+            // Render table
+            standingsArray.forEach((entry, index) => {
+                const row = `
+                    <tr>
+                        <td><strong>${index + 1}</strong></td>
+                        <td>${entry.team}</td>
+                        <td>${entry.played}</td>
+                        <td>${entry.wins}</td>
+                        <td>${entry.draws}</td>
+                        <td>${entry.losses}</td>
+                        <td>${entry.goalsFor}</td>
+                        <td>${entry.goalsAgainst}</td>
+                        <td>${entry.goalDifference >= 0 ? '+' : ''}${entry.goalDifference}</td>
+                        <td><strong>${entry.points}</strong></td>
+                    </tr>
+                `;
+                leagueBody.innerHTML += row;
+            });
+        }
+
+        function updateRecentResults() {
+            const recentResults = document.getElementById('recentResults');
+            recentResults.innerHTML = '';
+
+            if (matches.length === 0) {
+                recentResults.innerHTML = '<p>No results yet.</p>';
+                return;
+            }
+
+            const recent = [...matches].reverse().slice(0, 10);
+            recent.forEach(match => {
+                const result = `
+                    <div class="recent-match">
+                        <div><strong>${match.homeTeam} vs ${match.awayTeam}</strong></div>
+                        <div class="match-score">${match.homeGoals} - ${match.awayGoals}</div>
+                        <div style="font-size: 12px; color: var(--text-color); opacity: 0.7;">
+                            Leg ${match.leg} | Day ${match.day} | ${match.date}
+                        </div>
+                        ${match.scorers ? `<div style="font-size: 12px; margin-top: 8px;"><strong>Scorers:</strong> ${match.scorers}</div>` : ''}
+                    </div>
+                `;
+                recentResults.innerHTML += result;
+            });
+        }
+
+        function updateFixtures() {
+            const fixturesContent = document.getElementById('fixturesContent');
+            fixturesContent.innerHTML = '';
+
+            // Get played matches
+            const playedMatches = new Set();
+            matches.forEach(match => {
+                playedMatches.add(`${match.homeTeam}vs${match.awayTeam}${match.leg}`);
+            });
+
+            // Render Leg 1
+            let html = '<h3 style="color: var(--primary-color); margin: 20px 0 15px;">Leg 1</h3>';
+            html += '<div class="fixtures-grid">';
+
+            Object.keys(LEG1_FIXTURES).forEach(day => {
+                html += `<div class="fixture-card">
+                    <div class="fixture-day">${day}</div>`;
+                
+                LEG1_FIXTURES[day].forEach(fixture => {
+                    const key = `${fixture.home}vs${fixture.away}1`;
+                    const isPlayed = playedMatches.has(key);
+                    html += `<div class="fixture-match ${isPlayed ? 'played' : ''}">
+                        ${fixture.home} vs ${fixture.away}
+                    </div>`;
+                });
+
+                html += '</div>';
+            });
+
+            html += '</div>';
+
+            // Render Leg 2
+            html += '<h3 style="color: var(--primary-color); margin: 30px 0 15px;">Leg 2</h3>';
+            html += '<div class="fixtures-grid">';
+
+            Object.keys(LEG2_FIXTURES).forEach(day => {
+                html += `<div class="fixture-card">
+                    <div class="fixture-day">${day}</div>`;
+                
+                LEG2_FIXTURES[day].forEach(fixture => {
+                    const key = `${fixture.home}vs${fixture.away}2`;
+                    const isPlayed = playedMatches.has(key);
+                    html += `<div class="fixture-match ${isPlayed ? 'played' : ''}">
+                        ${fixture.home} vs ${fixture.away}
+                    </div>`;
+                });
+
+                html += '</div>';
+            });
+
+            html += '</div>';
+            fixturesContent.innerHTML = html;
+        }
+
+        function updateMatchHistory() {
+            const historyBody = document.getElementById('historyBody');
+            historyBody.innerHTML = '';
+
+            if (matches.length === 0) {
+                historyBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">No match history yet.</td></tr>';
+                return;
+            }
+
+            matches.forEach((match, index) => {
+                const row = `
+                    <tr>
+                        <td>${match.date}</td>
+                        <td>Leg ${match.leg}</td>
+                        <td>${match.homeTeam}</td>
+                        <td><strong>${match.homeGoals} - ${match.awayGoals}</strong></td>
+                        <td>${match.awayTeam}</td>
+                        <td><small>${match.scorers || '-'}</small></td>
+                        <td><button class="btn btn-danger btn-small" onclick="deleteMatch(${index})">Delete</button></td>
+                    </tr>
+                `;
+                historyBody.innerHTML += row;
+            });
+        }
+
+        function deleteMatch(index) {
+            if (confirm('Are you sure you want to delete this match?')) {
+                const match = matches[index];
+                
+                // Reverse the standings update
+                standings[match.homeTeam].played -= 1;
+                standings[match.awayTeam].played -= 1;
+                standings[match.homeTeam].goalsFor -= match.homeGoals;
+                standings[match.homeTeam].goalsAgainst -= match.awayGoals;
+                standings[match.awayTeam].goalsFor -= match.awayGoals;
+                standings[match.awayTeam].goalsAgainst -= match.homeGoals;
+
+                if (match.homeGoals > match.awayGoals) {
+                    standings[match.homeTeam].wins -= 1;
+                    standings[match.awayTeam].losses -= 1;
+                } else if (match.awayGoals > match.homeGoals) {
+                    standings[match.awayTeam].wins -= 1;
+                    standings[match.homeTeam].losses -= 1;
+                } else {
+                    standings[match.homeTeam].draws -= 1;
+                    standings[match.awayTeam].draws -= 1;
+                }
+
+                matches.splice(index, 1);
+                saveToLocalStorage();
+                updateLeagueTable();
+                updateRecentResults();
+                updateMatchHistory();
+                updateFixtures();
+            }
+        }
+
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active class from nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            // Check admin access
+            if (tabName === 'admin') {
+                if (isAdminLoggedIn) {
+                    document.getElementById('adminContent').style.display = 'block';
+                    document.getElementById('adminLogin').style.display = 'none';
+                } else {
+                    document.getElementById('adminContent').style.display = 'none';
+                    document.getElementById('adminLogin').style.display = 'block';
+                }
+            }
+        }
+
+        function showPasswordPrompt() {
+            document.getElementById('passwordModal').style.display = 'flex';
+            document.getElementById('passwordInput').focus();
+        }
+
+        function closePasswordPrompt() {
+            document.getElementById('passwordModal').style.display = 'none';
+            document.getElementById('passwordInput').value = '';
+        }
+
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                closePasswordPrompt();
+                document.getElementById('adminContent').style.display = 'block';
+                document.getElementById('adminLogin').style.display = 'none';
+                showAdminMessage('Logged in successfully!', 'success');
+            } else {
+                showAdminMessage('Invalid password', 'error');
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+
+        function logout() {
+            isAdminLoggedIn = false;
+            document.getElementById('adminContent').style.display = 'none';
+            document.getElementById('adminLogin').style.display = 'block';
+            document.getElementById('resultForm').reset();
+            showAdminMessage('Logged out successfully', 'success');
+        }
+
+        function showAdminMessage(message, type) {
+            const adminMessage = document.getElementById('adminMessage');
+            const className = type === 'success' ? 'success-message' : 'error-message';
+            adminMessage.innerHTML = `<div class="${className}">${message}</div>`;
+            setTimeout(() => {
+                adminMessage.innerHTML = '';
+            }, 3000);
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+
+        function checkTheme() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('standings', JSON.stringify(standings));
+            localStorage.setItem('matches', JSON.stringify(matches));
+        }
+
+        function loadFromLocalStorage() {
+            const savedStandings = localStorage.getItem('standings');
+            const savedMatches = localStorage.getItem('matches');
+
+            if (savedStandings) {
+                standings = JSON.parse(savedStandings);
+            }
+
+            if (savedMatches) {
+                matches = JSON.parse(savedMatches);
+            }
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear ALL data? This cannot be undone!')) {
+                initializeStandings();
+                matches = [];
+                saveToLocalStorage();
+                updateLeagueTable();
+                updateRecentResults();
+                updateMatchHistory();
+                updateFixtures();
+                showAdminMessage('All data cleared!', 'success');
+            }
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify({ standings, matches }, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `league-data-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
