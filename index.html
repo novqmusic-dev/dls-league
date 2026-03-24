@@ -6,31 +6,8 @@
     <title>Football League Management</title>
     
     <!-- Firebase SDKs -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, doc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        
-        // Your Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyAi2dw409sxGTSPedYph83aT2cdx8prtuA",
-            authDomain: "dlsg-7149f.firebaseapp.com",
-            projectId: "dlsg-7149f",
-            storageBucket: "dlsg-7149f.firebasestorage.app",
-            messagingSenderId: "2810497207",
-            appId: "1:2810497207:web:5f895e2c118a5c95d7e532",
-            measurementId: "G-9ER08LP0XH"
-        };
-        
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        
-        // Make db available globally
-        window.db = db;
-        window.firestoreHelpers = {
-            collection, doc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, query, orderBy, limit
-        };
-    </script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     
     <style>
         * {
@@ -68,10 +45,6 @@
             line-height: 1.6;
         }
 
-        html {
-            overflow-x: hidden;
-        }
-
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -91,14 +64,12 @@
             box-shadow: var(--shadow-lg);
             gap: 1rem;
             flex-wrap: wrap;
-            min-height: auto;
         }
 
         h1 {
             font-size: clamp(1.5rem, 4vw, 2.5rem);
             margin: 0;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            word-break: break-word;
         }
 
         .header-controls {
@@ -106,8 +77,6 @@
             gap: 0.75rem;
             align-items: center;
             flex-wrap: wrap;
-            justify-content: flex-end;
-            width: auto;
         }
 
         .btn {
@@ -121,10 +90,7 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            white-space: nowrap;
-            touch-action: manipulation;
             min-height: 44px;
-            min-width: 44px;
             justify-content: center;
         }
 
@@ -133,11 +99,9 @@
             color: white;
         }
 
-        .btn-primary:hover,
-        .btn-primary:active {
+        .btn-primary:hover {
             background-color: var(--secondary-color);
             transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
         }
 
         .btn-secondary {
@@ -145,30 +109,14 @@
             color: #1f2937;
         }
 
-        .btn-secondary:hover,
-        .btn-secondary:active {
-            background-color: #d97706;
-            transform: translateY(-2px);
-        }
-
         .btn-success {
             background-color: var(--success-color);
             color: white;
         }
 
-        .btn-success:hover,
-        .btn-success:active {
-            background-color: #059669;
-        }
-
         .btn-danger {
             background-color: var(--danger-color);
             color: white;
-        }
-
-        .btn-danger:hover,
-        .btn-danger:active {
-            background-color: #dc2626;
         }
 
         .btn-small {
@@ -180,13 +128,6 @@
             background: rgba(255, 255, 255, 0.2);
             color: white;
             border: 2px solid white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-        }
-
-        .theme-toggle:hover,
-        .theme-toggle:active {
-            background: rgba(255, 255, 255, 0.3);
         }
 
         .nav-tabs {
@@ -195,21 +136,6 @@
             margin-bottom: 1.5rem;
             border-bottom: 2px solid var(--border-color);
             overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
-        }
-
-        .nav-tabs::-webkit-scrollbar {
-            height: 4px;
-        }
-
-        .nav-tabs::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .nav-tabs::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 2px;
         }
 
         .nav-tab {
@@ -223,15 +149,10 @@
             transition: all 0.3s;
             font-weight: 600;
             white-space: nowrap;
-            flex-shrink: 0;
             min-height: 44px;
-            display: flex;
-            align-items: center;
-            touch-action: manipulation;
         }
 
-        .nav-tab:hover,
-        .nav-tab:active {
+        .nav-tab:hover {
             color: var(--primary-color);
         }
 
@@ -261,7 +182,6 @@
             padding: 1.25rem;
             margin-bottom: 1.25rem;
             box-shadow: var(--shadow);
-            overflow: hidden;
         }
 
         .card-title {
@@ -283,7 +203,8 @@
             color: white;
             padding: 0.75rem;
             text-align: left;
-            font-weight: 700;
+            position: sticky;
+            top: 0;
         }
 
         td {
@@ -292,7 +213,7 @@
         }
 
         tr:hover {
-            background: var(--card-bg);
+            background: rgba(37, 99, 235, 0.1);
         }
 
         .form-group {
@@ -311,7 +232,6 @@
             font-weight: 600;
             margin-bottom: 0.5rem;
             color: var(--text-color);
-            font-size: clamp(0.875rem, 2.5vw, 1rem);
         }
 
         input, select, textarea {
@@ -320,8 +240,7 @@
             border-radius: 6px;
             background: var(--bg-color);
             color: var(--text-color);
-            font-size: clamp(0.875rem, 2.5vw, 1rem);
-            transition: border-color 0.3s;
+            font-size: 16px;
             width: 100%;
             font-family: inherit;
         }
@@ -330,17 +249,6 @@
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        input[type="number"],
-        input[type="text"],
-        input[type="password"] {
-            font-size: 16px;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
         }
 
         .password-prompt {
@@ -364,26 +272,6 @@
             box-shadow: var(--shadow-lg);
             max-width: 400px;
             width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .password-modal h2 {
-            margin-bottom: 1rem;
-            color: var(--primary-color);
-            font-size: clamp(1.25rem, 3vw, 1.75rem);
-        }
-
-        .password-modal input {
-            width: 100%;
-            margin-bottom: 1rem;
-        }
-
-        .password-modal-buttons {
-            display: flex;
-            gap: 0.75rem;
-            justify-content: flex-end;
-            flex-wrap: wrap;
         }
 
         .recent-match {
@@ -392,7 +280,11 @@
             margin-bottom: 1rem;
             border-left: 4px solid var(--primary-color);
             border-radius: 6px;
-            word-break: break-word;
+            transition: transform 0.2s;
+        }
+
+        .recent-match:hover {
+            transform: translateX(5px);
         }
 
         .match-score {
@@ -404,7 +296,7 @@
 
         .fixtures-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1rem;
         }
 
@@ -413,15 +305,17 @@
             padding: 1rem;
             border-radius: 8px;
             border: 1px solid var(--border-color);
+            max-height: 450px;
             overflow-y: auto;
-            max-height: 400px;
         }
 
         .fixture-day {
             font-weight: 700;
             color: var(--primary-color);
             margin-bottom: 1rem;
-            font-size: clamp(0.875rem, 2.5vw, 1rem);
+            font-size: 1.1rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
         }
 
         .fixture-match {
@@ -429,34 +323,29 @@
             margin-bottom: 0.75rem;
             background: var(--bg-color);
             border-radius: 6px;
-            font-size: clamp(0.75rem, 2vw, 0.875rem);
             border: 1px solid var(--border-color);
-            word-break: break-word;
+            transition: all 0.2s;
         }
 
         .fixture-match.played {
-            opacity: 0.6;
+            opacity: 0.7;
             text-decoration: line-through;
+            background: #d1fae5;
+            border-color: var(--success-color);
+        }
+
+        body.dark-mode .fixture-match.played {
+            background: #065f46;
+        }
+
+        .fixture-match:not(.played):hover {
+            transform: translateX(-3px);
+            border-color: var(--primary-color);
         }
 
         .responsive-table {
             overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
             border-radius: 8px;
-            width: 100%;
-        }
-
-        .responsive-table::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .responsive-table::-webkit-scrollbar-track {
-            background: var(--card-bg);
-        }
-
-        .responsive-table::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 3px;
         }
 
         .error-message {
@@ -465,8 +354,7 @@
             padding: 1rem;
             border-radius: 6px;
             margin-bottom: 1rem;
-            font-size: clamp(0.75rem, 2.5vw, 0.95rem);
-            word-break: break-word;
+            animation: slideIn 0.3s ease;
         }
 
         .success-message {
@@ -475,87 +363,25 @@
             padding: 1rem;
             border-radius: 6px;
             margin-bottom: 1rem;
-            font-size: clamp(0.75rem, 2.5vw, 0.95rem);
-            word-break: break-word;
+            animation: slideIn 0.3s ease;
         }
 
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal {
-            background: var(--bg-color);
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
-            max-width: 500px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--text-color);
-            min-height: 44px;
-            min-width: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .stat-box {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
-            padding: 1.25rem;
-            border-radius: 12px;
+        .loading {
             text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        .stat-box-value {
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
-            font-weight: 700;
-        }
-
-        .stat-box-label {
-            font-size: clamp(0.7rem, 2vw, 0.9rem);
-            opacity: 0.9;
-            margin-top: 0.5rem;
-        }
-
-        #adminLogin {
-            text-align: center;
-            padding: 2rem 1rem;
-        }
-
-        #adminLogin p {
-            margin-bottom: 1rem;
-            font-size: clamp(0.875rem, 2.5vw, 1rem);
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: var(--primary-color);
         }
 
         .admin-buttons {
@@ -566,394 +392,83 @@
             justify-content: center;
         }
 
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            font-size: 1.2rem;
-            color: var(--primary-color);
+        .stats-banner {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
 
-        /* Mobile First - 0-480px */
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+        }
+
         @media (max-width: 480px) {
             .container {
                 padding: 0.75rem;
             }
-
+            
             header {
-                padding: 0.75rem;
-                margin-bottom: 1rem;
                 flex-direction: column;
                 align-items: stretch;
             }
-
+            
             h1 {
                 font-size: 1.25rem;
                 text-align: center;
-                width: 100%;
             }
-
+            
             .header-controls {
-                width: 100%;
-                gap: 0.5rem;
                 justify-content: center;
             }
-
+            
             .btn {
                 padding: 0.5rem 0.75rem;
                 font-size: 0.75rem;
                 flex: 1;
-                min-width: 0;
             }
-
-            .btn span {
-                display: none;
-            }
-
-            .nav-tabs {
-                margin-bottom: 1rem;
-                gap: 0.25rem;
-            }
-
+            
             .nav-tab {
                 padding: 0.5rem 0.75rem;
                 font-size: 0.75rem;
             }
-
-            .card {
-                padding: 1rem;
-                margin-bottom: 1rem;
-                border-radius: 8px;
-            }
-
-            .card-title {
-                font-size: 1.125rem;
-                margin-bottom: 0.75rem;
-            }
-
-            table {
-                font-size: 0.7rem;
-            }
-
-            th, td {
-                padding: 0.5rem;
-            }
-
+            
             .form-row {
                 grid-template-columns: 1fr;
-                gap: 0.75rem;
             }
-
-            .form-group {
-                margin-bottom: 1rem;
-            }
-
-            label {
-                font-size: 0.85rem;
-                margin-bottom: 0.4rem;
-            }
-
-            input, select, textarea {
-                font-size: 16px;
-                padding: 0.6rem;
-            }
-
-            .recent-match {
-                padding: 0.75rem;
-                margin-bottom: 0.75rem;
-            }
-
-            .match-score {
-                font-size: 1.25rem;
-            }
-
+            
             .fixtures-grid {
                 grid-template-columns: 1fr;
-                gap: 0.75rem;
             }
-
-            .fixture-card {
-                padding: 0.75rem;
-                max-height: 300px;
-            }
-
-            .fixture-match {
-                padding: 0.6rem;
-                margin-bottom: 0.5rem;
-                font-size: 0.75rem;
-            }
-
-            .password-modal {
-                padding: 1rem;
-            }
-
-            .password-modal h2 {
-                font-size: 1.25rem;
-            }
-
-            .admin-buttons {
-                flex-direction: column;
-            }
-
-            .admin-buttons .btn {
-                width: 100%;
+            
+            .stats-banner {
+                grid-template-columns: 1fr 1fr;
             }
         }
 
-        /* Small Tablets - 481-768px */
         @media (min-width: 481px) and (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-
-            header {
-                padding: 1rem;
-                margin-bottom: 1.5rem;
-                flex-wrap: wrap;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-                flex: 1;
-                min-width: 250px;
-            }
-
-            .header-controls {
-                gap: 0.75rem;
-                justify-content: flex-end;
-            }
-
-            .btn {
-                padding: 0.6rem 0.9rem;
-                font-size: 0.85rem;
-            }
-
-            .nav-tabs {
-                margin-bottom: 1.25rem;
-                gap: 0.75rem;
-            }
-
-            .nav-tab {
-                padding: 0.6rem 1rem;
-                font-size: 0.85rem;
-            }
-
-            .card {
-                padding: 1.25rem;
-                margin-bottom: 1.25rem;
-            }
-
-            .card-title {
-                font-size: 1.35rem;
-                margin-bottom: 1rem;
-            }
-
-            table {
-                font-size: 0.85rem;
-            }
-
-            th, td {
-                padding: 0.65rem;
-            }
-
-            .form-row {
+            .stats-banner {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
-            }
-
-            label {
-                font-size: 0.9rem;
-                margin-bottom: 0.5rem;
-            }
-
-            input, select, textarea {
-                font-size: 16px;
-                padding: 0.7rem;
-            }
-
-            .recent-match {
-                padding: 1rem;
-                margin-bottom: 1rem;
-            }
-
-            .match-score {
-                font-size: 1.5rem;
-            }
-
-            .fixtures-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
-            }
-
-            .fixture-card {
-                padding: 1rem;
-                max-height: 350px;
-            }
-
-            .fixture-match {
-                padding: 0.75rem;
-                margin-bottom: 0.75rem;
-                font-size: 0.85rem;
-            }
-
-            .password-modal {
-                padding: 1.25rem;
-            }
-
-            .password-modal h2 {
-                font-size: 1.5rem;
-            }
-        }
-
-        /* Large Tablets - 769-1024px */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .container {
-                padding: 1.25rem;
-            }
-
-            header {
-                padding: 1.25rem;
-                margin-bottom: 2rem;
-            }
-
-            h1 {
-                font-size: 1.75rem;
-            }
-
-            .header-controls {
-                gap: 1rem;
-            }
-
-            .btn {
-                padding: 0.7rem 1.1rem;
-                font-size: 0.9rem;
-            }
-
-            .nav-tabs {
-                margin-bottom: 1.5rem;
-                gap: 1rem;
-            }
-
-            .nav-tab {
-                padding: 0.75rem 1.25rem;
-                font-size: 0.95rem;
-            }
-
-            .card {
-                padding: 1.5rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .card-title {
-                font-size: 1.5rem;
-                margin-bottom: 1.25rem;
-            }
-
-            .form-row {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 1.25rem;
-            }
-
-            .fixtures-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 1.25rem;
-            }
-
-            .fixture-card {
-                padding: 1.25rem;
-                max-height: 400px;
-            }
-
-            .fixture-match {
-                padding: 0.85rem;
-                margin-bottom: 0.85rem;
-                font-size: 0.9rem;
-            }
-        }
-
-        /* Desktop - 1025px+ */
-        @media (min-width: 1025px) {
-            .container {
-                padding: 1.5rem;
-            }
-
-            header {
-                padding: 1.5rem;
-                margin-bottom: 2rem;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .header-controls {
-                gap: 1rem;
-            }
-
-            .btn {
-                padding: 0.75rem 1.25rem;
-                font-size: 0.95rem;
-            }
-
-            .nav-tabs {
-                margin-bottom: 2rem;
-                gap: 1rem;
-            }
-
-            .nav-tab {
-                padding: 0.875rem 1.5rem;
-                font-size: 1rem;
-            }
-
-            .card {
-                padding: 2rem;
-                margin-bottom: 2rem;
-            }
-
-            .card-title {
-                font-size: 1.75rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .form-row {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 1.5rem;
-            }
-
-            .fixtures-grid {
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                gap: 1.5rem;
-            }
-
-            .fixture-card {
-                padding: 1.5rem;
-                max-height: 500px;
-            }
-
-            .fixture-match {
-                padding: 1rem;
-                margin-bottom: 1rem;
-                font-size: 0.95rem;
-            }
-        }
-
-        @media print {
-            .header-controls, .nav-tabs, .btn-secondary, .password-prompt {
-                display: none !important;
-            }
-
-            body {
-                background: white;
-                color: black;
-            }
-
-            .card {
-                page-break-inside: avoid;
-                box-shadow: none;
-                border: 1px solid #ddd;
-            }
-
-            table {
-                page-break-inside: avoid;
             }
         }
     </style>
@@ -970,42 +485,30 @@
         </header>
 
         <div class="nav-tabs">
-            <button class="nav-tab active" onclick="switchTab('league')">League Table</button>
-            <button class="nav-tab" onclick="switchTab('results')">Recent Results</button>
-            <button class="nav-tab" onclick="switchTab('fixtures')">Fixtures</button>
-            <button class="nav-tab" onclick="switchTab('history')">Match History</button>
-            <button class="nav-tab" onclick="switchTab('admin')">Admin</button>
+            <button class="nav-tab active" onclick="switchTab('league')">🏆 League Table</button>
+            <button class="nav-tab" onclick="switchTab('results')">📋 Recent Results</button>
+            <button class="nav-tab" onclick="switchTab('fixtures')">📅 Fixtures</button>
+            <button class="nav-tab" onclick="switchTab('history')">📜 Match History</button>
+            <button class="nav-tab" onclick="switchTab('admin')">⚙️ Admin</button>
         </div>
 
-        <!-- League Table Tab -->
         <div id="league" class="tab-content active">
             <div class="card">
                 <h2 class="card-title">League Table</h2>
+                <div id="statsContainer" class="stats-banner"></div>
                 <div id="loadingLeague" class="loading">Loading data from cloud...</div>
                 <div class="responsive-table" id="leagueTableContainer" style="display: none;">
                     <table id="leagueTable">
                         <thead>
                             <tr>
-                                <th>Position</th>
-                                <th>Team</th>
-                                <th>P</th>
-                                <th>W</th>
-                                <th>D</th>
-                                <th>L</th>
-                                <th>GF</th>
-                                <th>GA</th>
-                                <th>GD</th>
-                                <th>Pts</th>
-                            </tr>
-                        </thead>
-                        <tbody id="leagueBody">
-                        </tbody>
+                                <th>Pos</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th>
+                            </thead>
+                        <tbody id="leagueBody"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- Recent Results Tab -->
         <div id="results" class="tab-content">
             <div class="card">
                 <h2 class="card-title">Recent Results</h2>
@@ -1013,394 +516,265 @@
             </div>
         </div>
 
-        <!-- Fixtures Tab -->
         <div id="fixtures" class="tab-content">
             <div class="card">
-                <h2 class="card-title">Fixtures</h2>
+                <h2 class="card-title">Upcoming Fixtures</h2>
                 <div id="fixturesContent"></div>
             </div>
         </div>
 
-        <!-- Match History Tab -->
         <div id="history" class="tab-content">
             <div class="card">
-                <h2 class="card-title">Match History</h2>
+                <h2 class="card-title">Complete Match History</h2>
                 <div id="loadingHistory" class="loading">Loading match history...</div>
                 <div class="responsive-table" id="historyTableContainer" style="display: none;">
                     <table id="historyTable">
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>Leg</th>
-                                <th>Home Team</th>
-                                <th>Score</th>
-                                <th>Away Team</th>
-                                <th>Scorers</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historyBody">
-                        </tbody>
+                                <th>Date</th><th>Leg</th><th>Home Team</th><th>Score</th><th>Away Team</th><th>Scorers</th><th>Action</th>
+                            </thead>
+                        <tbody id="historyBody"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- Admin Tab -->
         <div id="admin" class="tab-content">
             <div class="card">
-                <h2 class="card-title">Admin - Enter Match Result</h2>
+                <h2 class="card-title">Admin Panel - Enter Match Result</h2>
                 <div id="adminContent" style="display: none;">
-                    <form id="resultForm" onsubmit="submitResult(event)">
+                    <form id="resultForm">
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="homeTeam">Home Team</label>
+                                <label for="homeTeam">🏠 Home Team *</label>
                                 <select id="homeTeam" required>
-                                    <option value="">Select...</option>
+                                    <option value="">Select Home Team</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="awayTeam">Away Team</label>
+                                <label for="awayTeam">✈️ Away Team *</label>
                                 <select id="awayTeam" required>
-                                    <option value="">Select...</option>
+                                    <option value="">Select Away Team</option>
                                 </select>
                             </div>
                         </div>
-
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="homeGoals">Home Goals</label>
-                                <input type="number" id="homeGoals" min="0" required>
+                                <label for="homeGoals">⚽ Home Goals *</label>
+                                <input type="number" id="homeGoals" min="0" value="0" required>
                             </div>
                             <div class="form-group">
-                                <label for="awayGoals">Away Goals</label>
-                                <input type="number" id="awayGoals" min="0" required>
+                                <label for="awayGoals">⚽ Away Goals *</label>
+                                <input type="number" id="awayGoals" min="0" value="0" required>
                             </div>
                         </div>
-
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="leg">Leg</label>
+                                <label for="leg">🏆 Leg *</label>
                                 <select id="leg" required>
-                                    <option value="">Select...</option>
+                                    <option value="">Select Leg</option>
                                     <option value="1">Leg 1</option>
                                     <option value="2">Leg 2</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="dayNumber">Day Number (Optional)</label>
-                                <input type="number" id="dayNumber" min="1" max="5">
+                                <label for="dayNumber">📆 Day Number</label>
+                                <input type="number" id="dayNumber" min="1" max="6" placeholder="1-6">
                             </div>
                         </div>
-
                         <div class="form-group">
-                            <label for="scorers">Goal Scorers (Optional)</label>
-                            <textarea id="scorers" placeholder="Enter goal scorers details..." rows="3"></textarea>
+                            <label for="scorers">⚡ Goal Scorers (Optional)</label>
+                            <textarea id="scorers" rows="3" placeholder="e.g., John Doe (15'), Mike Smith (32', 45')"></textarea>
                         </div>
-
-                        <button type="submit" class="btn btn-success">Submit Result</button>
+                        <button type="submit" class="btn btn-success" style="width: 100%;">✅ Submit Match Result</button>
                     </form>
                     <div id="adminMessage"></div>
                     <div class="admin-buttons">
                         <button class="btn btn-danger" onclick="clearAllData()">⚠️ Clear All Data</button>
-                        <button class="btn btn-secondary" onclick="logout()">Logout</button>
+                        <button class="btn btn-secondary" onclick="logout()">🚪 Logout</button>
                     </div>
                 </div>
                 <div id="adminLogin">
-                    <p>Please log in to access the admin section.</p>
-                    <button class="btn btn-primary" onclick="showPasswordPrompt()">Login</button>
+                    <p>🔐 Please log in to access the admin section.</p>
+                    <button class="btn btn-primary" onclick="showPasswordPrompt()">🔑 Login</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Password Modal -->
     <div id="passwordModal" class="password-prompt" style="display: none;">
         <div class="password-modal">
-            <h2>Admin Login</h2>
-            <input type="password" id="passwordInput" placeholder="Enter password" onkeypress="if(event.key==='Enter') checkPassword()">
-            <div class="password-modal-buttons">
-                <button class="btn" onclick="closePasswordPrompt()" style="background: var(--border-color); color: var(--text-color);">Cancel</button>
+            <h2>🔐 Admin Login</h2>
+            <input type="password" id="passwordInput" placeholder="Enter admin password" onkeypress="if(event.key==='Enter') checkPassword()">
+            <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1rem;">
+                <button class="btn" onclick="closePasswordPrompt()">Cancel</button>
                 <button class="btn btn-primary" onclick="checkPassword()">Login</button>
             </div>
         </div>
     </div>
 
-    <script type="module">
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAi2dw409sxGTSPedYph83aT2cdx8prtuA",
+            authDomain: "dlsg-7149f.firebaseapp.com",
+            projectId: "dlsg-7149f",
+            storageBucket: "dlsg-7149f.firebasestorage.app",
+            messagingSenderId: "2810497207",
+            appId: "1:2810497207:web:5f895e2c118a5c95d7e532",
+            measurementId: "G-9ER08LP0XH"
+        };
+        
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
         // Constants
         const ADMIN_PASSWORD = 'seth47890';
         const TEAMS = [
-            'Amanya FC',
-            'Mom is TR FC',
-            'Dishan FC',
-            'Akasayi FC',
-            'Emma FC',
-            'Real Madrid',
-            'GIVEKO FC',
-            'Kartel Mcee',
-            'RUMBA',
-            'Calvin FC',
-            'rHOSH',
-            'Venom FC'
+            'Amanya FC', 'Mom is TR FC', 'Dishan FC', 'Akasayi FC', 'Emma FC',
+            'Real Madrid', 'GIVEKO FC', 'Kartel Mcee', 'RUMBA', 'Calvin FC', 'rHOSH', 'Venom FC'
         ];
 
+        // Initial alphabetical order for teams before any matches are played
+        const INITIAL_TEAM_ORDER = [...TEAMS].sort();
+
         const LEG1_FIXTURES = {
-            'Day 1': [
-                { home: 'Amanya FC', away: 'Mom is TR FC' },
-                { home: 'Dishan FC', away: 'Akasayi FC' },
-                { home: 'Emma FC', away: 'Real Madrid' },
-                { home: 'GIVEKO FC', away: 'Kartel Mcee' },
-                { home: 'RUMBA', away: 'Calvin FC' },
-                { home: 'rHOSH', away: 'Venom FC' },
-                { home: 'Mom is TR FC', away: 'Venom FC' },
-                { home: 'Calvin FC', away: 'rHOSH' },
-                { home: 'Kartel Mcee', away: 'RUMBA' },
-                { home: 'Real Madrid', away: 'GIVEKO FC' },
-                { home: 'Akasayi FC', away: 'Emma FC' },
-                { home: 'Amanya FC', away: 'Dishan FC' }
-            ],
-            'Day 2': [
-                { home: 'Dishan FC', away: 'Mom is TR FC' },
-                { home: 'Emma FC', away: 'Amanya FC' },
-                { home: 'GIVEKO FC', away: 'Akasayi FC' },
-                { home: 'RUMBA', away: 'Real Madrid' },
-                { home: 'rHOSH', away: 'Kartel Mcee' },
-                { home: 'Venom FC', away: 'Calvin FC' },
-                { home: 'Mom is TR FC', away: 'Calvin FC' },
-                { home: 'Kartel Mcee', away: 'Venom FC' },
-                { home: 'Real Madrid', away: 'rHOSH' },
-                { home: 'Akasayi FC', away: 'RUMBA' },
-                { home: 'Amanya FC', away: 'GIVEKO FC' },
-                { home: 'Dishan FC', away: 'Emma FC' }
-            ],
-            'Day 3': [
-                { home: 'Emma FC', away: 'Mom is TR FC' },
-                { home: 'GIVEKO FC', away: 'Dishan FC' },
-                { home: 'RUMBA', away: 'Amanya FC' },
-                { home: 'rHOSH', away: 'Akasayi FC' },
-                { home: 'Venom FC', away: 'Real Madrid' },
-                { home: 'Calvin FC', away: 'Kartel Mcee' },
-                { home: 'Mom is TR FC', away: 'Kartel Mcee' },
-                { home: 'Real Madrid', away: 'Calvin FC' },
-                { home: 'Akasayi FC', away: 'Venom FC' },
-                { home: 'Amanya FC', away: 'rHOSH' },
-                { home: 'Dishan FC', away: 'RUMBA' },
-                { home: 'Emma FC', away: 'GIVEKO FC' }
-            ],
-            'Day 4': [
-                { home: 'GIVEKO FC', away: 'Mom is TR FC' },
-                { home: 'RUMBA', away: 'Emma FC' },
-                { home: 'rHOSH', away: 'Dishan FC' },
-                { home: 'Venom FC', away: 'Amanya FC' },
-                { home: 'Calvin FC', away: 'Akasayi FC' },
-                { home: 'Kartel Mcee', away: 'Real Madrid' },
-                { home: 'Mom is TR FC', away: 'Real Madrid' },
-                { home: 'Akasayi FC', away: 'Kartel Mcee' },
-                { home: 'Amanya FC', away: 'Calvin FC' },
-                { home: 'Dishan FC', away: 'Venom FC' },
-                { home: 'Emma FC', away: 'rHOSH' },
-                { home: 'GIVEKO FC', away: 'RUMBA' }
-            ],
-            'Day 5': [
-                { home: 'RUMBA', away: 'Mom is TR FC' },
-                { home: 'rHOSH', away: 'GIVEKO FC' },
-                { home: 'Venom FC', away: 'Emma FC' },
-                { home: 'Calvin FC', away: 'Dishan FC' },
-                { home: 'Kartel Mcee', away: 'Amanya FC' },
-                { home: 'Real Madrid', away: 'Akasayi FC' },
-                { home: 'Mom is TR FC', away: 'Akasayi FC' },
-                { home: 'Amanya FC', away: 'Real Madrid' },
-                { home: 'Dishan FC', away: 'Kartel Mcee' },
-                { home: 'Emma FC', away: 'Calvin FC' },
-                { home: 'GIVEKO FC', away: 'Venom FC' },
-                { home: 'rHOSH', away: 'RUMBA' }
-            ],
-            'Day 6': [
-                { home: 'rHOSH', away: 'Mom is TR FC' },
-                { home: 'Venom FC', away: 'RUMBA' },
-                { home: 'Calvin FC', away: 'GIVEKO FC' },
-                { home: 'Kartel Mcee', away: 'Emma FC' },
-                { home: 'Real Madrid', away: 'Dishan FC' },
-                { home: 'Akasayi FC', away: 'Amanya FC' }
-            ]
+            'Day 1': [{ home: 'Amanya FC', away: 'Mom is TR FC' }, { home: 'Dishan FC', away: 'Akasayi FC' }, { home: 'Emma FC', away: 'Real Madrid' }, { home: 'GIVEKO FC', away: 'Kartel Mcee' }, { home: 'RUMBA', away: 'Calvin FC' }, { home: 'rHOSH', away: 'Venom FC' }, { home: 'Mom is TR FC', away: 'Venom FC' }, { home: 'Calvin FC', away: 'rHOSH' }, { home: 'Kartel Mcee', away: 'RUMBA' }, { home: 'Real Madrid', away: 'GIVEKO FC' }, { home: 'Akasayi FC', away: 'Emma FC' }, { home: 'Amanya FC', away: 'Dishan FC' }],
+            'Day 2': [{ home: 'Dishan FC', away: 'Mom is TR FC' }, { home: 'Emma FC', away: 'Amanya FC' }, { home: 'GIVEKO FC', away: 'Akasayi FC' }, { home: 'RUMBA', away: 'Real Madrid' }, { home: 'rHOSH', away: 'Kartel Mcee' }, { home: 'Venom FC', away: 'Calvin FC' }, { home: 'Mom is TR FC', away: 'Calvin FC' }, { home: 'Kartel Mcee', away: 'Venom FC' }, { home: 'Real Madrid', away: 'rHOSH' }, { home: 'Akasayi FC', away: 'RUMBA' }, { home: 'Amanya FC', away: 'GIVEKO FC' }, { home: 'Dishan FC', away: 'Emma FC' }],
+            'Day 3': [{ home: 'Emma FC', away: 'Mom is TR FC' }, { home: 'GIVEKO FC', away: 'Dishan FC' }, { home: 'RUMBA', away: 'Amanya FC' }, { home: 'rHOSH', away: 'Akasayi FC' }, { home: 'Venom FC', away: 'Real Madrid' }, { home: 'Calvin FC', away: 'Kartel Mcee' }, { home: 'Mom is TR FC', away: 'Kartel Mcee' }, { home: 'Real Madrid', away: 'Calvin FC' }, { home: 'Akasayi FC', away: 'Venom FC' }, { home: 'Amanya FC', away: 'rHOSH' }, { home: 'Dishan FC', away: 'RUMBA' }, { home: 'Emma FC', away: 'GIVEKO FC' }],
+            'Day 4': [{ home: 'GIVEKO FC', away: 'Mom is TR FC' }, { home: 'RUMBA', away: 'Emma FC' }, { home: 'rHOSH', away: 'Dishan FC' }, { home: 'Venom FC', away: 'Amanya FC' }, { home: 'Calvin FC', away: 'Akasayi FC' }, { home: 'Kartel Mcee', away: 'Real Madrid' }, { home: 'Mom is TR FC', away: 'Real Madrid' }, { home: 'Akasayi FC', away: 'Kartel Mcee' }, { home: 'Amanya FC', away: 'Calvin FC' }, { home: 'Dishan FC', away: 'Venom FC' }, { home: 'Emma FC', away: 'rHOSH' }, { home: 'GIVEKO FC', away: 'RUMBA' }],
+            'Day 5': [{ home: 'RUMBA', away: 'Mom is TR FC' }, { home: 'rHOSH', away: 'GIVEKO FC' }, { home: 'Venom FC', away: 'Emma FC' }, { home: 'Calvin FC', away: 'Dishan FC' }, { home: 'Kartel Mcee', away: 'Amanya FC' }, { home: 'Real Madrid', away: 'Akasayi FC' }, { home: 'Mom is TR FC', away: 'Akasayi FC' }, { home: 'Amanya FC', away: 'Real Madrid' }, { home: 'Dishan FC', away: 'Kartel Mcee' }, { home: 'Emma FC', away: 'Calvin FC' }, { home: 'GIVEKO FC', away: 'Venom FC' }, { home: 'rHOSH', away: 'RUMBA' }],
+            'Day 6': [{ home: 'rHOSH', away: 'Mom is TR FC' }, { home: 'Venom FC', away: 'RUMBA' }, { home: 'Calvin FC', away: 'GIVEKO FC' }, { home: 'Kartel Mcee', away: 'Emma FC' }, { home: 'Real Madrid', away: 'Dishan FC' }, { home: 'Akasayi FC', away: 'Amanya FC' }]
         };
 
         const LEG2_FIXTURES = {
-            'Day 1': [
-                { home: 'Mom is TR FC', away: 'Amanya FC' },
-                { home: 'Akasayi FC', away: 'Dishan FC' },
-                { home: 'Real Madrid', away: 'Emma FC' },
-                { home: 'Kartel Mcee', away: 'GIVEKO FC' },
-                { home: 'Calvin FC', away: 'RUMBA' },
-                { home: 'Venom FC', away: 'rHOSH' },
-                { home: 'Venom FC', away: 'Mom is TR FC' },
-                { home: 'rHOSH', away: 'Calvin FC' },
-                { home: 'RUMBA', away: 'Kartel Mcee' },
-                { home: 'GIVEKO FC', away: 'Real Madrid' },
-                { home: 'Emma FC', away: 'Akasayi FC' },
-                { home: 'Dishan FC', away: 'Amanya FC' }
-            ],
-            'Day 2': [
-                { home: 'Mom is TR FC', away: 'Dishan FC' },
-                { home: 'Amanya FC', away: 'Emma FC' },
-                { home: 'Akasayi FC', away: 'GIVEKO FC' },
-                { home: 'Real Madrid', away: 'RUMBA' },
-                { home: 'Kartel Mcee', away: 'rHOSH' },
-                { home: 'Calvin FC', away: 'Venom FC' },
-                { home: 'Calvin FC', away: 'Mom is TR FC' },
-                { home: 'Venom FC', away: 'Kartel Mcee' },
-                { home: 'rHOSH', away: 'Real Madrid' },
-                { home: 'RUMBA', away: 'Akasayi FC' },
-                { home: 'GIVEKO FC', away: 'Amanya FC' },
-                { home: 'Emma FC', away: 'Dishan FC' }
-            ],
-            'Day 3': [
-                { home: 'Mom is TR FC', away: 'Emma FC' },
-                { home: 'Dishan FC', away: 'GIVEKO FC' },
-                { home: 'Amanya FC', away: 'RUMBA' },
-                { home: 'Akasayi FC', away: 'rHOSH' },
-                { home: 'Real Madrid', away: 'Venom FC' },
-                { home: 'Kartel Mcee', away: 'Calvin FC' },
-                { home: 'Kartel Mcee', away: 'Mom is TR FC' },
-                { home: 'Calvin FC', away: 'Real Madrid' },
-                { home: 'Venom FC', away: 'Akasayi FC' },
-                { home: 'rHOSH', away: 'Amanya FC' },
-                { home: 'RUMBA', away: 'Dishan FC' },
-                { home: 'GIVEKO FC', away: 'Emma FC' }
-            ],
-            'Day 4': [
-                { home: 'Mom is TR FC', away: 'GIVEKO FC' },
-                { home: 'Emma FC', away: 'RUMBA' },
-                { home: 'Dishan FC', away: 'rHOSH' },
-                { home: 'Amanya FC', away: 'Venom FC' },
-                { home: 'Akasayi FC', away: 'Calvin FC' },
-                { home: 'Real Madrid', away: 'Kartel Mcee' },
-                { home: 'Real Madrid', away: 'Mom is TR FC' },
-                { home: 'Kartel Mcee', away: 'Akasayi FC' },
-                { home: 'Calvin FC', away: 'Amanya FC' },
-                { home: 'Venom FC', away: 'Dishan FC' },
-                { home: 'rHOSH', away: 'Emma FC' },
-                { home: 'RUMBA', away: 'GIVEKO FC' }
-            ],
-            'Day 5': [
-                { home: 'Mom is TR FC', away: 'RUMBA' },
-                { home: 'GIVEKO FC', away: 'rHOSH' },
-                { home: 'Emma FC', away: 'Venom FC' },
-                { home: 'Dishan FC', away: 'Calvin FC' },
-                { home: 'Amanya FC', away: 'Kartel Mcee' },
-                { home: 'Akasayi FC', away: 'Real Madrid' },
-                { home: 'Akasayi FC', away: 'Mom is TR FC' },
-                { home: 'Real Madrid', away: 'Amanya FC' },
-                { home: 'Kartel Mcee', away: 'Dishan FC' },
-                { home: 'Calvin FC', away: 'Emma FC' },
-                { home: 'Venom FC', away: 'GIVEKO FC' },
-                { home: 'rHOSH', away: 'RUMBA' }
-            ],
-            'Day 6': [
-                { home: 'Mom is TR FC', away: 'rHOSH' },
-                { home: 'RUMBA', away: 'Venom FC' },
-                { home: 'GIVEKO FC', away: 'Calvin FC' },
-                { home: 'Emma FC', away: 'Kartel Mcee' },
-                { home: 'Dishan FC', away: 'Real Madrid' },
-                { home: 'Amanya FC', away: 'Akasayi FC' }
-            ]
+            'Day 1': [{ home: 'Mom is TR FC', away: 'Amanya FC' }, { home: 'Akasayi FC', away: 'Dishan FC' }, { home: 'Real Madrid', away: 'Emma FC' }, { home: 'Kartel Mcee', away: 'GIVEKO FC' }, { home: 'Calvin FC', away: 'RUMBA' }, { home: 'Venom FC', away: 'rHOSH' }, { home: 'Venom FC', away: 'Mom is TR FC' }, { home: 'rHOSH', away: 'Calvin FC' }, { home: 'RUMBA', away: 'Kartel Mcee' }, { home: 'GIVEKO FC', away: 'Real Madrid' }, { home: 'Emma FC', away: 'Akasayi FC' }, { home: 'Dishan FC', away: 'Amanya FC' }],
+            'Day 2': [{ home: 'Mom is TR FC', away: 'Dishan FC' }, { home: 'Amanya FC', away: 'Emma FC' }, { home: 'Akasayi FC', away: 'GIVEKO FC' }, { home: 'Real Madrid', away: 'RUMBA' }, { home: 'Kartel Mcee', away: 'rHOSH' }, { home: 'Calvin FC', away: 'Venom FC' }, { home: 'Calvin FC', away: 'Mom is TR FC' }, { home: 'Venom FC', away: 'Kartel Mcee' }, { home: 'rHOSH', away: 'Real Madrid' }, { home: 'RUMBA', away: 'Akasayi FC' }, { home: 'GIVEKO FC', away: 'Amanya FC' }, { home: 'Emma FC', away: 'Dishan FC' }],
+            'Day 3': [{ home: 'Mom is TR FC', away: 'Emma FC' }, { home: 'Dishan FC', away: 'GIVEKO FC' }, { home: 'Amanya FC', away: 'RUMBA' }, { home: 'Akasayi FC', away: 'rHOSH' }, { home: 'Real Madrid', away: 'Venom FC' }, { home: 'Kartel Mcee', away: 'Calvin FC' }, { home: 'Kartel Mcee', away: 'Mom is TR FC' }, { home: 'Calvin FC', away: 'Real Madrid' }, { home: 'Venom FC', away: 'Akasayi FC' }, { home: 'rHOSH', away: 'Amanya FC' }, { home: 'RUMBA', away: 'Dishan FC' }, { home: 'GIVEKO FC', away: 'Emma FC' }],
+            'Day 4': [{ home: 'Mom is TR FC', away: 'GIVEKO FC' }, { home: 'Emma FC', away: 'RUMBA' }, { home: 'Dishan FC', away: 'rHOSH' }, { home: 'Amanya FC', away: 'Venom FC' }, { home: 'Akasayi FC', away: 'Calvin FC' }, { home: 'Real Madrid', away: 'Kartel Mcee' }, { home: 'Real Madrid', away: 'Mom is TR FC' }, { home: 'Kartel Mcee', away: 'Akasayi FC' }, { home: 'Calvin FC', away: 'Amanya FC' }, { home: 'Venom FC', away: 'Dishan FC' }, { home: 'rHOSH', away: 'Emma FC' }, { home: 'RUMBA', away: 'GIVEKO FC' }],
+            'Day 5': [{ home: 'Mom is TR FC', away: 'RUMBA' }, { home: 'GIVEKO FC', away: 'rHOSH' }, { home: 'Emma FC', away: 'Venom FC' }, { home: 'Dishan FC', away: 'Calvin FC' }, { home: 'Amanya FC', away: 'Kartel Mcee' }, { home: 'Akasayi FC', away: 'Real Madrid' }, { home: 'Akasayi FC', away: 'Mom is TR FC' }, { home: 'Real Madrid', away: 'Amanya FC' }, { home: 'Kartel Mcee', away: 'Dishan FC' }, { home: 'Calvin FC', away: 'Emma FC' }, { home: 'Venom FC', away: 'GIVEKO FC' }, { home: 'rHOSH', away: 'RUMBA' }],
+            'Day 6': [{ home: 'Mom is TR FC', away: 'rHOSH' }, { home: 'RUMBA', away: 'Venom FC' }, { home: 'GIVEKO FC', away: 'Calvin FC' }, { home: 'Emma FC', away: 'Kartel Mcee' }, { home: 'Dishan FC', away: 'Real Madrid' }, { home: 'Amanya FC', away: 'Akasayi FC' }]
         };
 
         // State
         let isAdminLoggedIn = false;
-        let standings = {};
         let matches = [];
-
-        // Firebase references
-        const { db, firestoreHelpers } = window;
-        const { doc, setDoc, getDoc, getDocs, collection, deleteDoc, query, orderBy } = firestoreHelpers;
 
         // Initialize
         document.addEventListener('DOMContentLoaded', async function() {
-            initializeStandings();
+            console.log("🏆 Football League Management System Starting...");
             await loadFromFirebase();
             populateTeamSelects();
-            updateLeagueTable();
-            updateRecentResults();
-            updateFixtures();
-            updateMatchHistory();
+            updateAllDisplays();
             checkTheme();
+            
+            // Add form submit handler
+            document.getElementById('resultForm').addEventListener('submit', submitResult);
         });
 
-        function initializeStandings() {
+        // Function to calculate standings from matches
+        function calculateStandings() {
+            // Initialize standings for all teams with zeros
+            const standings = {};
             TEAMS.forEach(team => {
                 standings[team] = {
-                    played: 0,
-                    wins: 0,
-                    draws: 0,
-                    losses: 0,
-                    goalsFor: 0,
-                    goalsAgainst: 0
+                    played: 0, wins: 0, draws: 0, losses: 0,
+                    goalsFor: 0, goalsAgainst: 0, points: 0, goalDifference: 0
                 };
             });
+            
+            // Process each match
+            matches.forEach(match => {
+                const homeTeam = match.homeTeam;
+                const awayTeam = match.awayTeam;
+                const homeGoals = match.homeGoals;
+                const awayGoals = match.awayGoals;
+                
+                // Update goals
+                standings[homeTeam].goalsFor += homeGoals;
+                standings[homeTeam].goalsAgainst += awayGoals;
+                standings[awayTeam].goalsFor += awayGoals;
+                standings[awayTeam].goalsAgainst += homeGoals;
+                
+                // Update results
+                if (homeGoals > awayGoals) {
+                    standings[homeTeam].wins += 1;
+                    standings[awayTeam].losses += 1;
+                } else if (awayGoals > homeGoals) {
+                    standings[awayTeam].wins += 1;
+                    standings[homeTeam].losses += 1;
+                } else {
+                    standings[homeTeam].draws += 1;
+                    standings[awayTeam].draws += 1;
+                }
+                
+                // Update played
+                standings[homeTeam].played += 1;
+                standings[awayTeam].played += 1;
+            });
+            
+            // Calculate points and goal difference
+            Object.keys(standings).forEach(team => {
+                standings[team].points = (standings[team].wins * 3) + (standings[team].draws * 1);
+                standings[team].goalDifference = standings[team].goalsFor - standings[team].goalsAgainst;
+            });
+            
+            return standings;
         }
 
         async function saveToFirebase() {
             try {
-                // Save standings
-                const standingsRef = doc(db, "leagueData", "standings");
-                await setDoc(standingsRef, { data: standings, updatedAt: new Date().toISOString() });
-                
-                // Save matches
-                const matchesRef = doc(db, "leagueData", "matches");
-                await setDoc(matchesRef, { data: matches, updatedAt: new Date().toISOString() });
-                
-                console.log("Data saved to Firebase successfully");
+                // Save matches to Firestore
+                const matchesRef = db.collection('leagueData').doc('matches');
+                await matchesRef.set({
+                    matches: matches,
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+                    totalMatches: matches.length
+                });
+                console.log("✅ Matches saved to Firebase:", matches.length);
+                return true;
             } catch (error) {
-                console.error("Error saving to Firebase:", error);
-                showAdminMessage("Error saving to cloud. Check console for details.", "error");
+                console.error("❌ Firebase save error:", error);
+                showAdminMessage("Error saving to cloud: " + error.message, "error");
+                return false;
             }
         }
 
         async function loadFromFirebase() {
             try {
-                // Show loading indicators
+                console.log("📡 Loading data from Firebase...");
                 document.getElementById('loadingLeague').style.display = 'block';
                 document.getElementById('leagueTableContainer').style.display = 'none';
                 document.getElementById('loadingHistory').style.display = 'block';
                 document.getElementById('historyTableContainer').style.display = 'none';
                 
-                // Load standings
-                const standingsRef = doc(db, "leagueData", "standings");
-                const standingsSnap = await getDoc(standingsRef);
+                // Get matches from Firestore
+                const matchesRef = db.collection('leagueData').doc('matches');
+                const docSnap = await matchesRef.get();
                 
-                if (standingsSnap.exists()) {
-                    const loadedStandings = standingsSnap.data().data;
-                    if (loadedStandings && Object.keys(loadedStandings).length > 0) {
-                        standings = loadedStandings;
+                if (docSnap.exists) {
+                    const data = docSnap.data();
+                    if (data && data.matches && Array.isArray(data.matches)) {
+                        matches = data.matches;
+                        console.log("📋 Matches loaded from Firebase:", matches.length);
+                        if (matches.length > 0) {
+                            console.log("Sample match:", matches[0]);
+                        }
                     } else {
-                        initializeStandings();
-                    }
-                } else {
-                    initializeStandings();
-                }
-                
-                // Load matches
-                const matchesRef = doc(db, "leagueData", "matches");
-                const matchesSnap = await getDoc(matchesRef);
-                
-                if (matchesSnap.exists()) {
-                    const loadedMatches = matchesSnap.data().data;
-                    if (loadedMatches && loadedMatches.length > 0) {
-                        matches = loadedMatches;
-                    } else {
+                        console.log("No matches found in document, starting fresh");
                         matches = [];
                     }
                 } else {
+                    console.log("Document doesn't exist, creating new one");
                     matches = [];
+                    await saveToFirebase(); // Create the document
                 }
                 
-                console.log("Data loaded from Firebase successfully");
             } catch (error) {
-                console.error("Error loading from Firebase:", error);
-                showAdminMessage("Error loading from cloud. Using local backup.", "error");
-                // Fallback to localStorage if Firebase fails
-                loadFromLocalStorage();
+                console.error("❌ Firebase load error:", error);
+                showAdminMessage("Error loading from cloud: " + error.message, "error");
+                matches = [];
             } finally {
                 document.getElementById('loadingLeague').style.display = 'none';
                 document.getElementById('leagueTableContainer').style.display = 'block';
@@ -1413,15 +787,68 @@
             const homeTeam = document.getElementById('homeTeam');
             const awayTeam = document.getElementById('awayTeam');
             
+            homeTeam.innerHTML = '<option value="">Select Home Team</option>';
+            awayTeam.innerHTML = '<option value="">Select Away Team</option>';
+            
             TEAMS.forEach(team => {
                 homeTeam.innerHTML += `<option value="${team}">${team}</option>`;
                 awayTeam.innerHTML += `<option value="${team}">${team}</option>`;
             });
         }
 
+        function updateAllDisplays() {
+            console.log("🔄 Updating all displays with", matches.length, "matches");
+            updateStatsBanner();
+            updateLeagueTable();
+            updateRecentResults();
+            updateFixtures();
+            updateMatchHistory();
+        }
+
+        function updateStatsBanner() {
+            const statsContainer = document.getElementById('statsContainer');
+            const totalMatches = matches.length;
+            const totalTeams = TEAMS.length;
+            
+            // Calculate total goals
+            let totalGoals = 0;
+            matches.forEach(match => {
+                totalGoals += match.homeGoals + match.awayGoals;
+            });
+            
+            // Calculate total matches remaining
+            const totalFixtures = Object.keys(LEG1_FIXTURES).length + Object.keys(LEG2_FIXTURES).length;
+            const totalPossibleMatches = Object.keys(LEG1_FIXTURES).reduce((sum, day) => sum + LEG1_FIXTURES[day].length, 0) +
+                                         Object.keys(LEG2_FIXTURES).reduce((sum, day) => sum + LEG2_FIXTURES[day].length, 0);
+            const matchesRemaining = totalPossibleMatches - totalMatches;
+            
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${totalMatches}</div>
+                    <div class="stat-label">Matches Played</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${matchesRemaining}</div>
+                    <div class="stat-label">Matches Remaining</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${totalTeams}</div>
+                    <div class="stat-label">Teams</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${totalGoals}</div>
+                    <div class="stat-label">Total Goals</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${totalMatches > 0 ? (totalGoals / totalMatches).toFixed(1) : 0}</div>
+                    <div class="stat-label">Avg Goals/Match</div>
+                </div>
+            `;
+        }
+
         async function submitResult(event) {
             event.preventDefault();
-
+            
             if (!isAdminLoggedIn) {
                 showAdminMessage('Please login first', 'error');
                 return;
@@ -1435,8 +862,19 @@
             const dayNumber = document.getElementById('dayNumber').value || 'N/A';
             const scorers = document.getElementById('scorers').value;
 
-            if (!homeTeam || !awayTeam || homeTeam === awayTeam) {
-                showAdminMessage('Invalid teams selected', 'error');
+            // Validation
+            if (!homeTeam || !awayTeam) {
+                showAdminMessage('Please select both teams', 'error');
+                return;
+            }
+            
+            if (homeTeam === awayTeam) {
+                showAdminMessage('Home team and away team cannot be the same', 'error');
+                return;
+            }
+            
+            if (!leg) {
+                showAdminMessage('Please select the leg', 'error');
                 return;
             }
 
@@ -1448,273 +886,221 @@
             );
 
             if (matchExists) {
-                showAdminMessage('This match has already been recorded!', 'error');
+                showAdminMessage('⚠️ This match has already been recorded!', 'error');
                 return;
             }
 
-            // Update standings
-            standings[homeTeam].played += 1;
-            standings[awayTeam].played += 1;
-            standings[homeTeam].goalsFor += homeGoals;
-            standings[homeTeam].goalsAgainst += awayGoals;
-            standings[awayTeam].goalsFor += awayGoals;
-            standings[awayTeam].goalsAgainst += homeGoals;
-
-            if (homeGoals > awayGoals) {
-                standings[homeTeam].wins += 1;
-                standings[awayTeam].losses += 1;
-            } else if (awayGoals > homeGoals) {
-                standings[awayTeam].wins += 1;
-                standings[homeTeam].losses += 1;
-            } else {
-                standings[homeTeam].draws += 1;
-                standings[awayTeam].draws += 1;
-            }
-
             // Add to matches
-            matches.push({
+            const newMatch = {
                 id: Date.now().toString(),
-                homeTeam,
-                awayTeam,
-                homeGoals,
-                awayGoals,
+                homeTeam, 
+                awayTeam, 
+                homeGoals, 
+                awayGoals, 
                 leg,
-                day: dayNumber,
-                scorers,
-                date: new Date().toLocaleString()
-            });
+                day: dayNumber, 
+                scorers: scorers || '-', 
+                date: new Date().toLocaleString(),
+                timestamp: Date.now()
+            };
+            matches.push(newMatch);
 
             // Save to Firebase
-            await saveToFirebase();
+            const saved = await saveToFirebase();
             
-            // Update UI
-            updateLeagueTable();
-            updateRecentResults();
-            updateMatchHistory();
-            updateFixtures();
-
-            // Reset form
-            document.getElementById('resultForm').reset();
-            showAdminMessage('Result submitted and saved to cloud successfully!', 'success');
+            if (saved) {
+                // Update all displays
+                updateAllDisplays();
+                
+                // Reset form
+                document.getElementById('resultForm').reset();
+                document.getElementById('homeGoals').value = '0';
+                document.getElementById('awayGoals').value = '0';
+                document.getElementById('leg').value = '';
+                document.getElementById('scorers').value = '';
+                
+                showAdminMessage(`✅ Result recorded: ${homeTeam} ${homeGoals} - ${awayGoals} ${awayTeam}`, 'success');
+                console.log("📊 Updated, now have", matches.length, "matches");
+            }
         }
 
         function updateLeagueTable() {
             const leagueBody = document.getElementById('leagueBody');
             leagueBody.innerHTML = '';
-
-            // Create standings array
-            const standingsArray = TEAMS.map(team => ({
+            
+            const standings = calculateStandings();
+            
+            // Convert to array and sort
+            let standingsArray = Object.keys(standings).map(team => ({
                 team,
                 ...standings[team]
             }));
-
-            // Calculate points and sort
-            standingsArray.forEach(entry => {
-                entry.points = (entry.wins * 3) + (entry.draws * 1);
-                entry.goalDifference = entry.goalsFor - entry.goalsAgainst;
-            });
-
-            // Sort by: Points desc, Goal Difference desc, Goals For desc
-            standingsArray.sort((a, b) => {
-                if (b.points !== a.points) return b.points - a.points;
-                if (b.goalDifference !== a.goalDifference) return b.goalDifference - a.goalDifference;
-                return b.goalsFor - a.goalsFor;
-            });
-
-            // Render table
+            
+            // If no matches played, show teams in alphabetical order
+            if (matches.length === 0) {
+                standingsArray = INITIAL_TEAM_ORDER.map(team => ({
+                    team,
+                    played: 0, wins: 0, draws: 0, losses: 0,
+                    goalsFor: 0, goalsAgainst: 0, points: 0, goalDifference: 0
+                }));
+            } else {
+                // Sort by: Points desc, Goal Difference desc, Goals For desc
+                standingsArray.sort((a, b) => {
+                    if (b.points !== a.points) return b.points - a.points;
+                    if (b.goalDifference !== a.goalDifference) return b.goalDifference - a.goalDifference;
+                    return b.goalsFor - a.goalsFor;
+                });
+            }
+            
+            if (standingsArray.length === 0) {
+                leagueBody.innerHTML = '院士<td colspan="10" style="text-align: center;">No data available</td></tr>';
+                return;
+            }
+            
             standingsArray.forEach((entry, index) => {
-                const row = `
-                    <tr>
-                        <td><strong>${index + 1}</strong></td>
-                        <td>${entry.team}</td>
-                        <td>${entry.played}</td>
-                        <td>${entry.wins}</td>
-                        <td>${entry.draws}</td>
-                        <td>${entry.losses}</td>
-                        <td>${entry.goalsFor}</td>
-                        <td>${entry.goalsAgainst}</td>
-                        <td>${entry.goalDifference >= 0 ? '+' : ''}${entry.goalDifference}</td>
-                        <td><strong>${entry.points}</strong></td>
-                    </tr>
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="font-weight: bold; ${index < 4 ? 'color: var(--success-color);' : ''}">${index + 1}</td>
+                    <td style="font-weight: 500;">${entry.team}</td>
+                    <td>${entry.played}</td>
+                    <td>${entry.wins}</td>
+                    <td>${entry.draws}</td>
+                    <td>${entry.losses}</td>
+                    <td>${entry.goalsFor}</td>
+                    <td>${entry.goalsAgainst}</td>
+                    <td>${entry.goalDifference >= 0 ? '+' : ''}${entry.goalDifference}</td>
+                    <td style="font-weight: bold; color: var(--primary-color);">${entry.points}</td>
                 `;
-                leagueBody.innerHTML += row;
+                leagueBody.appendChild(row);
             });
+            
+            console.log("📊 League table updated");
         }
 
         function updateRecentResults() {
             const recentResults = document.getElementById('recentResults');
-            recentResults.innerHTML = '';
-
+            
             if (matches.length === 0) {
-                recentResults.innerHTML = '<p>No results yet.</p>';
+                recentResults.innerHTML = '<p>📭 No results recorded yet. Add results in the Admin tab.</p>';
                 return;
             }
-
-            const recent = [...matches].reverse().slice(0, 10);
-            recent.forEach(match => {
-                const result = `
-                    <div class="recent-match">
-                        <div><strong>${match.homeTeam} vs ${match.awayTeam}</strong></div>
-                        <div class="match-score">${match.homeGoals} - ${match.awayGoals}</div>
-                        <div style="font-size: clamp(0.7rem, 2vw, 0.85rem); color: var(--text-color); opacity: 0.7;">
-                            Leg ${match.leg} | Day ${match.day} | ${match.date}
-                        </div>
-                        ${match.scorers ? `<div style="font-size: clamp(0.7rem, 2vw, 0.85rem); margin-top: 0.5rem;"><strong>Scorers:</strong> ${match.scorers}</div>` : ''}
+            
+            recentResults.innerHTML = '';
+            const recentMatches = [...matches].reverse().slice(0, 10);
+            
+            recentMatches.forEach(match => {
+                const matchDiv = document.createElement('div');
+                matchDiv.className = 'recent-match';
+                matchDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <strong>${match.homeTeam} vs ${match.awayTeam}</strong>
+                        <span style="font-size: 0.75rem; opacity: 0.7;">${match.date}</span>
                     </div>
+                    <div class="match-score">${match.homeGoals} - ${match.awayGoals}</div>
+                    <div style="font-size: 0.85rem; opacity: 0.7;">
+                        🏆 Leg ${match.leg} | 📆 Day ${match.day}
+                    </div>
+                    ${match.scorers && match.scorers !== '-' ? `<div style="font-size: 0.85rem; margin-top: 0.5rem; background: var(--card-bg); padding: 0.5rem; border-radius: 4px;"><strong>⚽ Scorers:</strong> ${match.scorers}</div>` : ''}
                 `;
-                recentResults.innerHTML += result;
+                recentResults.appendChild(matchDiv);
             });
         }
 
         function updateFixtures() {
             const fixturesContent = document.getElementById('fixturesContent');
-            fixturesContent.innerHTML = '';
-
-            // Get played matches
             const playedMatches = new Set();
+            
             matches.forEach(match => {
                 playedMatches.add(`${match.homeTeam}vs${match.awayTeam}${match.leg}`);
             });
-
-            // Render Leg 1
-            let html = '<h3 style="color: var(--primary-color); margin: clamp(1rem, 3vw, 2rem) 0 1rem; font-size: clamp(1.125rem, 3vw, 1.5rem);">Leg 1</h3>';
-            html += '<div class="fixtures-grid">';
-
+            
+            let html = '<h3 style="color: var(--primary-color); margin-bottom: 1rem;">🏆 Leg 1 Fixtures</h3><div class="fixtures-grid">';
+            
             Object.keys(LEG1_FIXTURES).forEach(day => {
-                html += `<div class="fixture-card">
-                    <div class="fixture-day">${day}</div>`;
-                
+                html += `<div class="fixture-card"><div class="fixture-day">📅 ${day}</div>`;
                 LEG1_FIXTURES[day].forEach(fixture => {
-                    const key = `${fixture.home}vs${fixture.away}1`;
-                    const isPlayed = playedMatches.has(key);
+                    const isPlayed = playedMatches.has(`${fixture.home}vs${fixture.away}1`);
                     html += `<div class="fixture-match ${isPlayed ? 'played' : ''}">
-                        ${fixture.home} vs ${fixture.away}
+                        ${isPlayed ? '✅' : '⏳'} ${fixture.home} vs ${fixture.away}
+                        ${isPlayed ? ' <span style="font-size: 0.7rem;">(Played)</span>' : ''}
                     </div>`;
                 });
-
                 html += '</div>';
             });
-
-            html += '</div>';
-
-            // Render Leg 2
-            html += '<h3 style="color: var(--primary-color); margin: clamp(1.5rem, 4vw, 3rem) 0 1rem; font-size: clamp(1.125rem, 3vw, 1.5rem);">Leg 2</h3>';
-            html += '<div class="fixtures-grid">';
-
+            
+            html += '</div><h3 style="color: var(--primary-color); margin: 1.5rem 0 1rem;">🏆 Leg 2 Fixtures</h3><div class="fixtures-grid">';
+            
             Object.keys(LEG2_FIXTURES).forEach(day => {
-                html += `<div class="fixture-card">
-                    <div class="fixture-day">${day}</div>`;
-                
+                html += `<div class="fixture-card"><div class="fixture-day">📅 ${day}</div>`;
                 LEG2_FIXTURES[day].forEach(fixture => {
-                    const key = `${fixture.home}vs${fixture.away}2`;
-                    const isPlayed = playedMatches.has(key);
+                    const isPlayed = playedMatches.has(`${fixture.home}vs${fixture.away}2`);
                     html += `<div class="fixture-match ${isPlayed ? 'played' : ''}">
-                        ${fixture.home} vs ${fixture.away}
+                        ${isPlayed ? '✅' : '⏳'} ${fixture.home} vs ${fixture.away}
+                        ${isPlayed ? ' <span style="font-size: 0.7rem;">(Played)</span>' : ''}
                     </div>`;
                 });
-
                 html += '</div>';
             });
-
+            
             html += '</div>';
             fixturesContent.innerHTML = html;
         }
 
         function updateMatchHistory() {
             const historyBody = document.getElementById('historyBody');
-            historyBody.innerHTML = '';
-
+            
             if (matches.length === 0) {
-                historyBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: clamp(1rem, 3vw, 2rem);">No match history yet.</td></tr>';
+                historyBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">📭 No match history yet. Add results in the Admin tab.</td></tr>';
                 return;
             }
-
-            matches.forEach((match, index) => {
-                const row = `
-                    <tr>
-                        <td>${match.date}</td>
-                        <td>Leg ${match.leg}</td>
-                        <td>${match.homeTeam}</td>
-                        <td><strong>${match.homeGoals} - ${match.awayGoals}</strong></td>
-                        <td>${match.awayTeam}</td>
-                        <td><small>${match.scorers || '-'}</small></td>
-                        <td><button class="btn btn-danger btn-small" onclick="deleteMatch(${index})">Delete</button></td>
-                    </tr>
+            
+            historyBody.innerHTML = '';
+            [...matches].reverse().forEach((match, idx) => {
+                const originalIndex = matches.length - 1 - idx;
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="font-size: 0.85rem;">${match.date}</td>
+                    <td>Leg ${match.leg}</td>
+                    <td>${match.homeTeam}</td>
+                    <td style="font-weight: bold; text-align: center;">${match.homeGoals} - ${match.awayGoals}</td>
+                    <td>${match.awayTeam}</td>
+                    <td><small>${match.scorers || '-'}</small></td>
+                    <td><button class="btn btn-danger btn-small" onclick="deleteMatch(${originalIndex})">🗑️ Delete</button></td>
                 `;
-                historyBody.innerHTML += row;
+                historyBody.appendChild(row);
             });
         }
 
         window.deleteMatch = async function(index) {
-            if (confirm('Are you sure you want to delete this match?')) {
-                const match = matches[index];
-                
-                // Reverse the standings update
-                standings[match.homeTeam].played -= 1;
-                standings[match.awayTeam].played -= 1;
-                standings[match.homeTeam].goalsFor -= match.homeGoals;
-                standings[match.homeTeam].goalsAgainst -= match.awayGoals;
-                standings[match.awayTeam].goalsFor -= match.awayGoals;
-                standings[match.awayTeam].goalsAgainst -= match.homeGoals;
-
-                if (match.homeGoals > match.awayGoals) {
-                    standings[match.homeTeam].wins -= 1;
-                    standings[match.awayTeam].losses -= 1;
-                } else if (match.awayGoals > match.homeGoals) {
-                    standings[match.awayTeam].wins -= 1;
-                    standings[match.homeTeam].losses -= 1;
-                } else {
-                    standings[match.homeTeam].draws -= 1;
-                    standings[match.awayTeam].draws -= 1;
-                }
-
-                matches.splice(index, 1);
-                await saveToFirebase();
-                updateLeagueTable();
-                updateRecentResults();
-                updateMatchHistory();
-                updateFixtures();
-                showAdminMessage('Match deleted successfully!', 'success');
+            if (!confirm('⚠️ Are you sure you want to delete this match? This will affect the league standings!')) {
+                return;
             }
+            
+            matches.splice(index, 1);
+            await saveToFirebase();
+            updateAllDisplays();
+            showAdminMessage('✅ Match deleted successfully!', 'success');
         };
 
         window.switchTab = function(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-
-            // Remove active class from nav tabs
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-
-            // Show selected tab
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
-
-            // Check admin access
+            
             if (tabName === 'admin') {
-                if (isAdminLoggedIn) {
-                    document.getElementById('adminContent').style.display = 'block';
-                    document.getElementById('adminLogin').style.display = 'none';
-                } else {
-                    document.getElementById('adminContent').style.display = 'none';
-                    document.getElementById('adminLogin').style.display = 'block';
-                }
+                document.getElementById('adminContent').style.display = isAdminLoggedIn ? 'block' : 'none';
+                document.getElementById('adminLogin').style.display = isAdminLoggedIn ? 'none' : 'block';
             }
         };
 
-        window.showPasswordPrompt = function() {
-            document.getElementById('passwordModal').style.display = 'flex';
-            document.getElementById('passwordInput').focus();
-        };
-
-        window.closePasswordPrompt = function() {
+        window.showPasswordPrompt = () => document.getElementById('passwordModal').style.display = 'flex';
+        
+        window.closePasswordPrompt = () => {
             document.getElementById('passwordModal').style.display = 'none';
             document.getElementById('passwordInput').value = '';
         };
-
+        
         window.checkPassword = function() {
             const password = document.getElementById('passwordInput').value;
             if (password === ADMIN_PASSWORD) {
@@ -1722,83 +1108,89 @@
                 closePasswordPrompt();
                 document.getElementById('adminContent').style.display = 'block';
                 document.getElementById('adminLogin').style.display = 'none';
-                showAdminMessage('Logged in successfully!', 'success');
+                showAdminMessage('✅ Logged in successfully!', 'success');
             } else {
-                showAdminMessage('Invalid password', 'error');
+                showAdminMessage('❌ Invalid password', 'error');
                 document.getElementById('passwordInput').value = '';
             }
         };
-
+        
         window.logout = function() {
             isAdminLoggedIn = false;
             document.getElementById('adminContent').style.display = 'none';
             document.getElementById('adminLogin').style.display = 'block';
             document.getElementById('resultForm').reset();
-            showAdminMessage('Logged out successfully', 'success');
+            showAdminMessage('🔓 Logged out successfully', 'success');
         };
-
+        
         function showAdminMessage(message, type) {
-            const adminMessage = document.getElementById('adminMessage');
-            const className = type === 'success' ? 'success-message' : 'error-message';
-            adminMessage.innerHTML = `<div class="${className}">${message}</div>`;
+            const msgDiv = document.getElementById('adminMessage');
+            msgDiv.innerHTML = `<div class="${type === 'success' ? 'success-message' : 'error-message'}">${message}</div>`;
             setTimeout(() => {
-                adminMessage.innerHTML = '';
-            }, 3000);
+                if (msgDiv.innerHTML) msgDiv.innerHTML = '';
+            }, 4000);
         }
-
-        window.toggleTheme = function() {
+        
+        window.toggleTheme = () => {
             document.body.classList.toggle('dark-mode');
             localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
         };
-
+        
         function checkTheme() {
-            const theme = localStorage.getItem('theme');
-            if (theme === 'dark') {
+            if (localStorage.getItem('theme') === 'dark') {
                 document.body.classList.add('dark-mode');
             }
         }
-
-        function saveToLocalStorage() {
-            localStorage.setItem('standings', JSON.stringify(standings));
-            localStorage.setItem('matches', JSON.stringify(matches));
-        }
-
-        function loadFromLocalStorage() {
-            const savedStandings = localStorage.getItem('standings');
-            const savedMatches = localStorage.getItem('matches');
-
-            if (savedStandings) {
-                standings = JSON.parse(savedStandings);
-            }
-
-            if (savedMatches) {
-                matches = JSON.parse(savedMatches);
-            }
-        }
-
+        
         window.clearAllData = async function() {
-            if (confirm('⚠️ WARNING: This will delete ALL data from the cloud! This cannot be undone. Are you absolutely sure?')) {
-                initializeStandings();
+            if (confirm('⚠️⚠️⚠️ WARNING: This will delete ALL matches from the cloud! This cannot be undone. Are you absolutely sure?')) {
                 matches = [];
                 await saveToFirebase();
-                updateLeagueTable();
-                updateRecentResults();
-                updateMatchHistory();
-                updateFixtures();
-                showAdminMessage('All data cleared from cloud!', 'success');
+                updateAllDisplays();
+                showAdminMessage('🗑️ All matches have been cleared from the cloud!', 'success');
             }
         };
-
+        
         window.exportData = function() {
-            const dataStr = JSON.stringify({ standings, matches }, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `league-data-${new Date().toISOString().split('T')[0]}.json`;
-            link.click();
+            const dataStr = JSON.stringify({ 
+                matches, 
+                exportDate: new Date().toISOString(),
+                totalMatches: matches.length 
+            }, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `league-matches-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
             URL.revokeObjectURL(url);
+            showAdminMessage('📊 Data exported successfully!', 'success');
         };
+        
+        // Debug function to check Firebase data
+        window.checkFirebaseData = async function() {
+            console.log("🔍 Checking Firebase data...");
+            try {
+                const matchesRef = db.collection('leagueData').doc('matches');
+                const docSnap = await matchesRef.get();
+                if (docSnap.exists) {
+                    console.log("✅ Firebase document exists!");
+                    console.log("Data:", docSnap.data());
+                    alert(`Firebase data found: ${docSnap.data().matches?.length || 0} matches stored`);
+                } else {
+                    console.log("❌ No document found in Firebase");
+                    alert("No data found in Firebase. You can start adding matches!");
+                }
+            } catch (error) {
+                console.error("Error checking Firebase:", error);
+                alert("Error checking Firebase: " + error.message);
+            }
+        };
+        
+        // Initial data check
+        setTimeout(() => {
+            console.log("💡 Tip: Run 'checkFirebaseData()' in console to verify Firebase connection");
+        }, 1000);
     </script>
 </body>
 </html>
